@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/MultiHazardRisk" >
+        <file>icon.png</file>
+    </qresource>
+</RCC>
