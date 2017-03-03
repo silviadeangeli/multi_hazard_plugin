@@ -1,4 +1,4 @@
-Plugin Builder Results X
+Plugin Builder Results 
 
 Your plugin MultiHazardRisk was created in:
     /Users/silviadeangeli/.qgis2/python/plugins/multi_hazard_plugin/MultiHazardRisk
