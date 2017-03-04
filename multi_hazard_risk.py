@@ -27,6 +27,11 @@ import resources
 # Import the code for the dialog
 from multi_hazard_risk_dialog import MultiHazardRiskDialog
 import os.path
+# Import hazards list
+from hazards import hazards_list
+# Import GDAL for raster calculation
+from osgeo import gdal
+import sys
 
 
 class MultiHazardRisk:
@@ -182,6 +187,25 @@ class MultiHazardRisk:
 
     def run(self):
         """Run method that performs all the real work"""
+        
+        layers = self.iface.legendInterface().layers()
+        layer_list = []
+        for layer in layers:
+        	layer_list.append(layer.name())
+        self.dlg.layer1.addItems(layer_list)
+        
+        self.dlg.hazardtype1.addItems(hazards_list)
+        
+        src_ds = gdal.Open('/Users/silviadeangeli/Desktop/raster1.tif')
+        bands_list = []
+        for band in range(src_ds.RasterCount):
+        	band += 1
+        	srcband = src_ds.GetRasterBand(band)
+        	bands_list.append(str(srcband.GetBand()))
+        	if srcband is None:
+        		continue
+		self.dlg.magnitude1.addItems(bands_list)
+		
         # show the dialog
         self.dlg.show()
         # Run the dialog event loop
