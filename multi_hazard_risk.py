@@ -21,7 +21,7 @@
  ***************************************************************************/
 """
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
-from PyQt4.QtGui import QAction, QIcon
+from PyQt4.QtGui import QAction, QIcon, QDialog, QLineEdit, QFileDialog
 # Initialize Qt resources from file resources.py
 import resources
 # Import the code for the dialog
@@ -193,18 +193,39 @@ class MultiHazardRisk:
         for layer in layers:
         	layer_list.append(layer.name())
         self.dlg.layer1.addItems(layer_list)
-        
         self.dlg.hazardtype1.addItems(hazards_list)
         
-        src_ds = gdal.Open('/Users/silviadeangeli/Desktop/raster1.tif')
-        bands_list = []
-        for band in range(src_ds.RasterCount):
-        	band += 1
-        	srcband = src_ds.GetRasterBand(band)
-        	bands_list.append(str(srcband.GetBand()))
-        	if srcband is None:
-        		continue
-		self.dlg.magnitude1.addItems(bands_list)
+        from qgis.core import QgsRasterLayer
+        from qgis.core import QgsApplication
+        #fileInfo = QFileInfo("raster1.tif")
+        #path = fileInfo.absoluteFilePath()
+        #baseName = fileInfo.baseName()
+
+
+        #text = str(self.dlg.layer1.currentText())
+        #path= os.path.abspath(text,".tif")
+        #ciao = gdal.Open(os.path.abspath(text,".exe"))
+        #src_ds = gdal.Open('/Users/silviadeangeli/Desktop/raster1.tif')
+        
+        
+        
+        #bands_list = []
+        #for band in range(src_ds.RasterCount):
+        #band += 1
+        #srcband = src_ds.GetRasterBand(band)
+        #bands_list.append(str(srcband.GetBand()))
+        #if srcband is None:
+        #continue
+        #self.dlg.magnitude1.addItems(bands_list)
+        #self.dlg.time1.addItems(bands_list)
+        #self.dlg.duration1.addItems(bands_list)
+
+
+        def SingleBrowse(self):
+            filePath = QFileDialog.getOpenFileName(self,'Select file to open','~/Desktop','*.tif')
+        self.dlg.browse.clicked.connect(SingleBrowse)
+        #self.dlg.textBrowser.setText(filePath)
+                                                                                                       
 		
         # show the dialog
         self.dlg.show()
