@@ -221,8 +221,8 @@ class MultiHazardRisk:
         #self.dlg.duration1.addItems(bands_list)
 
 
-        def SingleBrowse(self):
-            filePath = QFileDialog.getOpenFileName(self,'Select file to open','~/Desktop','*.tif')
+    def SingleBrowse(self):
+        filePath = QFileDialog.getOpenFileName(None,'Select file to open','~/Desktop','*.tif')
         self.dlg.browse.clicked.connect(SingleBrowse)
         #self.dlg.textBrowser.setText(filePath)
                                                                                                        
