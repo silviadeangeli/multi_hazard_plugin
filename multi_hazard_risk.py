@@ -33,6 +33,10 @@ from hazards import hazards_list
 from osgeo import gdal
 import sys
 
+filePath = ''
+def SingleBrowse(self):
+		global filePath
+		filePath = QFileDialog.getOpenFileName(None,'Select file to open','~/Desktop','*.tif')	
 
 class MultiHazardRisk:
     """QGIS Plugin Implementation."""
@@ -184,15 +188,17 @@ class MultiHazardRisk:
         # remove the toolbar
         del self.toolbar
 
-
+	
     def run(self):
         """Run method that performs all the real work"""
-        
-        layers = self.iface.legendInterface().layers()
-        layer_list = []
-        for layer in layers:
-        	layer_list.append(layer.name())
-        self.dlg.layer1.addItems(layer_list)
+        global filePath
+
+        #layers = self.iface.legendInterface().layers()
+        #layer_list = []
+        #for layer in layers:
+        #layer_list.append(layer.name())
+        #self.dlg.layer1.addItems(layer_list)
+
         self.dlg.hazardtype1.addItems(hazards_list)
         
         from qgis.core import QgsRasterLayer
@@ -221,10 +227,9 @@ class MultiHazardRisk:
         #self.dlg.duration1.addItems(bands_list)
 
 
-    def SingleBrowse(self):
-        filePath = QFileDialog.getOpenFileName(None,'Select file to open','~/Desktop','*.tif')
-        self.dlg.browse.clicked.connect(SingleBrowse)
-        #self.dlg.textBrowser.setText(filePath)
+
+    	self.dlg.browse.clicked.connect(SingleBrowse)   
+        self.dlg.textBrowser.appendPlainText(filePath)
                                                                                                        
 		
         # show the dialog
