@@ -32,15 +32,12 @@ from hazards import hazards_list
 # Import GDAL for raster calculation
 from osgeo import gdal
 import sys
-import settings
 
-filePath = ''
-def SingleBrowse(self):
-		global filePath
-		filePath = QFileDialog.getOpenFileName(None,'Select file to open','~/Desktop','*.tif')	
+
 
 class MultiHazardRisk:
     """QGIS Plugin Implementation."""
+    filePath = None
 
     def __init__(self, iface):
         """Constructor.
@@ -189,10 +186,18 @@ class MultiHazardRisk:
         # remove the toolbar
         del self.toolbar
 
-	
+
+
+    def single_browse(self):
+        self.filePath = QFileDialog.getOpenFileName(None, 'Select file to open','~/Desktop','*.tif')
+        self.dlg.textBrowser.setPlainText(self.filePath)
+    
+    def compute(self):
+        # calculate the multi hazard risk
+        pass
+
     def run(self):
         """Run method that performs all the real work"""
-        global filePath
 
         #layers = self.iface.legendInterface().layers()
         #layer_list = []
@@ -229,13 +234,14 @@ class MultiHazardRisk:
 
 
 
-    	self.dlg.browse.clicked.connect(SingleBrowse)   
-        self.dlg.textBrowser.appendPlainText(filePath)
+    	self.dlg.browse.clicked.connect(self.single_browse)
+        
         self.dlg.update()
         #file = open('settings.py','w')
         #file.write('h1_path = %') %filePath
         #file.close()
-
+        
+        #self.dlg.nomebottoneok.clicked.connect(self.compute)
 		
         # show the dialog
         self.dlg.show()
