@@ -32,6 +32,7 @@ from hazards import hazards_list
 # Import GDAL for raster calculation
 from osgeo import gdal
 import sys
+import settings
 
 filePath = ''
 def SingleBrowse(self):
@@ -230,7 +231,11 @@ class MultiHazardRisk:
 
     	self.dlg.browse.clicked.connect(SingleBrowse)   
         self.dlg.textBrowser.appendPlainText(filePath)
-                                                                                                       
+        self.dlg.update()
+        #file = open('settings.py','w')
+        #file.write('h1_path = %') %filePath
+        #file.close()
+
 		
         # show the dialog
         self.dlg.show()
