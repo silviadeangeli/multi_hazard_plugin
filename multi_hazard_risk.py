@@ -32,7 +32,7 @@ from hazards import hazards_list
 # Import GDAL for raster calculation
 from osgeo import gdal
 import sys
-
+from functools import partial
 
 
 class MultiHazardRisk:
@@ -186,14 +186,37 @@ class MultiHazardRisk:
         # remove the toolbar
         del self.toolbar
 
+    def bandlist(self, rasterpath, widget):
+        raster = gdal.Open(rasterpath)
+        bands_list = []
+        for band in range(raster.RasterCount):
+            band += 1
+            rasterband = raster.GetRasterBand(band)
+            bands_list.append(str(rasterband.GetBand()))
+            if rasterband is None:
+                continue
+        widget.addItems(bands_list)
 
+    def single_browse(self, widget, widget2, widget3, widget4, ext):
+        self.filePath = QFileDialog.getOpenFileName(None, 'Select file to open','~/Desktop', ext)
+        widget.setPlainText(self.filePath)
+        raster = gdal.Open(self.filePath)
+        bands_list = []
+        for band in range(raster.RasterCount):
+            band += 1
+            rasterband = raster.GetRasterBand(band)
+            bands_list.append(str(rasterband.GetBand()))
+            if rasterband is None:
+                continue
+        widget2.addItems(bands_list)
+        widget3.addItems(bands_list)
+        widget4.addItems(bands_list)
 
-    def single_browse(self):
-        self.filePath = QFileDialog.getOpenFileName(None, 'Select file to open','~/Desktop','*.tif')
-        self.dlg.textBrowser.setPlainText(self.filePath)
+    def single_browse2(self, widget, ext):
+        self.filePath2 = QFileDialog.getOpenFileName(None, 'Select file to open', '~/Desktop', ext)
+        widget.setPlainText(self.filePath2)
     
     def compute(self):
-        # calculate the multi hazard risk
         pass
 
     def run(self):
@@ -206,41 +229,29 @@ class MultiHazardRisk:
         #self.dlg.layer1.addItems(layer_list)
 
         self.dlg.hazardtype1.addItems(hazards_list)
-        
-        from qgis.core import QgsRasterLayer
-        from qgis.core import QgsApplication
-        #fileInfo = QFileInfo("raster1.tif")
-        #path = fileInfo.absoluteFilePath()
-        #baseName = fileInfo.baseName()
+
+        #Browser button for h1
+    	self.dlg.browse1.clicked.connect(partial(self.single_browse, widget=self.dlg.textBrowser1, widget2=self.dlg.magnitude1, widget3=self.dlg.duration1, widget4=self.dlg.time1, ext='*.tif'))
+        self.dlg.update()
 
 
-        #text = str(self.dlg.layer1.currentText())
-        #path= os.path.abspath(text,".tif")
-        #ciao = gdal.Open(os.path.abspath(text,".exe"))
-        #src_ds = gdal.Open('/Users/silviadeangeli/Desktop/raster1.tif')
-        
-        
-        
-        #bands_list = []
-        #for band in range(src_ds.RasterCount):
-        #band += 1
-        #srcband = src_ds.GetRasterBand(band)
-        #bands_list.append(str(srcband.GetBand()))
-        #if srcband is None:
-        #continue
+        #Browser button for h2
+        self.dlg.browse2.clicked.connect(partial(self.single_browse, widget=self.dlg.textBrowser2, widget2=self.dlg.magnitude2, widget3=self.dlg.duration2, widget4=self.dlg.time2, ext='*.tif'))
+        self.dlg.update()
+
+        #if self.filePath:
+            #partial(self.bandlist, widget=self.dlg.magnitude1, rasterpath= self.filePath)
+            #self.filePath = ""
+
+        #Browser button for exposure
+        #self.dlg.browseE1.clicked.connect(partial(self.single_browse, widget=self.dlg.textBrowserE1, ext='*.shp'))
+        #self.dlg.update()
+
+
         #self.dlg.magnitude1.addItems(bands_list)
         #self.dlg.time1.addItems(bands_list)
         #self.dlg.duration1.addItems(bands_list)
 
-
-
-    	self.dlg.browse.clicked.connect(self.single_browse)
-        
-        self.dlg.update()
-        #file = open('settings.py','w')
-        #file.write('h1_path = %') %filePath
-        #file.close()
-        
         #self.dlg.nomebottoneok.clicked.connect(self.compute)
 		
         # show the dialog
