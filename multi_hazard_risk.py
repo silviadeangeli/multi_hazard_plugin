@@ -22,6 +22,7 @@
 """
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
 from PyQt4.QtGui import QAction, QIcon, QDialog, QLineEdit, QFileDialog
+from qgis.core import QgsMessageLog
 # Initialize Qt resources from file resources.py
 import resources
 # Import the code for the dialog
@@ -33,7 +34,19 @@ from hazards import hazards_list
 from osgeo import gdal
 import sys
 from functools import partial
+import Tkinter as tk
+from show_results import ShowResults
+from matplotlib.figure import Figure
 
+import numpy as np
+from PyQt4 import QtGui
+
+import matplotlib.cm as cm
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+import random
+from data_plotter import create_rectangle, define_color, obtain_raster_values
+import rasterio
 
 class MultiHazardRisk:
     """QGIS Plugin Implementation."""
@@ -72,6 +85,8 @@ class MultiHazardRisk:
         # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'MultiHazardRisk')
         self.toolbar.setObjectName(u'MultiHazardRisk')
+
+        self.dialog_instance = ShowResults()
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -215,8 +230,35 @@ class MultiHazardRisk:
     def single_browse2(self, widget, ext):
         self.filePath2 = QFileDialog.getOpenFileName(None, 'Select file to open', '~/Desktop', ext)
         widget.setPlainText(self.filePath2)
-    
+
+
     def compute(self):
+
+        m1 = self.dlg.magnitude1.currentText()
+        t1 = self.dlg.time1.currentText()
+        d1 = self.dlg.duration1.currentText()
+        self.dlg.close()
+        self.dialog_instance.exec_()
+        QgsMessageLog.logMessage(m1, "debug")
+        #self.dialog_instance.test.setPlainText(m1)
+        t1_val = obtain_raster_values(self.filePath,t1)
+
+        fig, ax = plt.subplots()
+
+        time = [t1_val, 12, 8]
+        duration = [20, 30, 10]
+
+
+        for k in range(len(time)):
+            ax.add_patch(create_rectangle(time[k], duration[k], 0.025 + k * 0.15, define_color(len(time), k, 'Spectral'), 1))
+
+        for k in range(len(time)):
+            ax.add_patch(create_rectangle(time[k], duration[k], -0.2, define_color(len(time), k, 'Spectral'), 0.5))
+
+        ax.autoscale(True, axis='both', tight=None)
+        ax.yaxis.set_visible(False)
+        ax.set_aspect(40, adjustable=None, anchor=None)
+        plt.show()
         pass
 
     def run(self):
@@ -252,7 +294,7 @@ class MultiHazardRisk:
         #self.dlg.time1.addItems(bands_list)
         #self.dlg.duration1.addItems(bands_list)
 
-        #self.dlg.nomebottoneok.clicked.connect(self.compute)
+        self.dlg.button_box.clicked.connect(self.compute)
 		
         # show the dialog
         self.dlg.show()
