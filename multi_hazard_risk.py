@@ -46,7 +46,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import random
 from data_plotter import create_rectangle, define_color, obtain_raster_values
-import rasterio
+
 
 class MultiHazardRisk:
     """QGIS Plugin Implementation."""
@@ -239,9 +239,9 @@ class MultiHazardRisk:
         d1 = self.dlg.duration1.currentText()
         self.dlg.close()
         self.dialog_instance.exec_()
-        QgsMessageLog.logMessage(m1, "debug")
+        QgsMessageLog.logMessage("m1="+m1, "debug")
         #self.dialog_instance.test.setPlainText(m1)
-        t1_val = obtain_raster_values(self.filePath,t1)
+        t1_val = obtain_raster_values(self.filePath,int(t1))
 
         fig, ax = plt.subplots()
 

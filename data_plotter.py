@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import random
 import rasterio
+from rasterio.features import shapes
 
 #fig, ax = plt.subplots()
 
@@ -26,8 +27,9 @@ def obtain_raster_values(raster_path,band):
     with rasterio.open(raster_path) as src:
         x = (src.bounds.left + src.bounds.right) / 3.0
         y = (src.bounds.bottom + src.bounds.top) / 2.0
-        value = src.sample([(x, y)])[band]
-    return value
+        vals = src.sample([(x, y)])
+        for val in vals:
+            return val[band-1]
 
 #for k in range(len(time)):
     #ax.add_patch(create_rectangle(time[k], duration[k], 0.025+k*0.15, define_color(len(time),k,'Spectral'),1))
