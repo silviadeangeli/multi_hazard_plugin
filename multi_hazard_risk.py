@@ -45,7 +45,7 @@ import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import random
-from data_plotter import create_rectangle, define_color, obtain_raster_values
+from data_plotter import create_rectangle, define_color, obtain_raster_values, make_plot
 
 
 class MultiHazardRisk:
@@ -227,9 +227,6 @@ class MultiHazardRisk:
         widget3.addItems(bands_list)
         widget4.addItems(bands_list)
 
-    def single_browse2(self, widget, ext):
-        self.filePath2 = QFileDialog.getOpenFileName(None, 'Select file to open', '~/Desktop', ext)
-        widget.setPlainText(self.filePath2)
 
 
     def compute(self):
@@ -237,28 +234,34 @@ class MultiHazardRisk:
         m1 = self.dlg.magnitude1.currentText()
         t1 = self.dlg.time1.currentText()
         d1 = self.dlg.duration1.currentText()
+
+        m2 = self.dlg.magnitude2.currentText()
+        t2 = self.dlg.time2.currentText()
+        d2 = self.dlg.duration2.currentText()
+
         self.dlg.close()
         self.dialog_instance.exec_()
-        QgsMessageLog.logMessage("m1="+m1, "debug")
-        #self.dialog_instance.test.setPlainText(m1)
-        t1_val = obtain_raster_values(self.filePath,int(t1))
+        #QgsMessageLog.logMessage("m1_band="+m1, "debug")
 
-        fig, ax = plt.subplots()
+        x= 607496
+        y= 8734503
 
-        time = [t1_val, 12, 8]
-        duration = [20, 30, 10]
+        m1_val = obtain_raster_values(self.dlg.textBrowser1.toPlainText(),int(m1),x,y)
+        t1_val = obtain_raster_values(self.dlg.textBrowser1.toPlainText(), int(t1),x,y)
+        d1_val = obtain_raster_values(self.dlg.textBrowser1.toPlainText(), int(d1),x,y)
 
+        m2_val = obtain_raster_values(self.filePath, int(m2),x,y)
+        t2_val = obtain_raster_values(self.filePath, int(t2),x,y)
+        d2_val = obtain_raster_values(self.filePath, int(d2),x,y)
 
-        for k in range(len(time)):
-            ax.add_patch(create_rectangle(time[k], duration[k], 0.025 + k * 0.15, define_color(len(time), k, 'Spectral'), 1))
+        time = [t1_val, t2_val]
+        duration = [d1_val, d2_val]
 
-        for k in range(len(time)):
-            ax.add_patch(create_rectangle(time[k], duration[k], -0.2, define_color(len(time), k, 'Spectral'), 0.5))
+        #QgsMessageLog.logMessage(time, "debug")
+        #QgsMessageLog.logMessage(duration, "debug")
 
-        ax.autoscale(True, axis='both', tight=None)
-        ax.yaxis.set_visible(False)
-        ax.set_aspect(40, adjustable=None, anchor=None)
-        plt.show()
+        make_plot(time, duration)
+
         pass
 
     def run(self):
@@ -271,11 +274,11 @@ class MultiHazardRisk:
         #self.dlg.layer1.addItems(layer_list)
 
         self.dlg.hazardtype1.addItems(hazards_list)
+        self.dlg.hazardtype2.addItems(hazards_list)
 
         #Browser button for h1
     	self.dlg.browse1.clicked.connect(partial(self.single_browse, widget=self.dlg.textBrowser1, widget2=self.dlg.magnitude1, widget3=self.dlg.duration1, widget4=self.dlg.time1, ext='*.tif'))
         self.dlg.update()
-
 
         #Browser button for h2
         self.dlg.browse2.clicked.connect(partial(self.single_browse, widget=self.dlg.textBrowser2, widget2=self.dlg.magnitude2, widget3=self.dlg.duration2, widget4=self.dlg.time2, ext='*.tif'))
