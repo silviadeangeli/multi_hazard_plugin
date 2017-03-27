@@ -5,11 +5,10 @@ import matplotlib.patches as patches
 import random
 import rasterio
 from rasterio.features import shapes
+from qgis.core import *
+from qgis.utils import *
+from qgis.gui import *
 
-#fig, ax = plt.subplots()
-
-#time =[10, 12, 8]
-#duration=[20, 30, 10]
 
 def define_color(size, i, style):
     cmap = cm.get_cmap(style)
@@ -17,18 +16,16 @@ def define_color(size, i, style):
     return rgba
 
 def create_rectangle(time, duration, y_pos,color, alpha_set):
-    time_end= time + duration
     xy = (time, y_pos)
     h = 0.1
-    rectangle = patches.Rectangle(xy, time_end,h,facecolor=color, alpha=alpha_set)
+    rectangle = patches.Rectangle(xy, duration,h,facecolor=color, alpha=alpha_set)
     return rectangle
 
 def obtain_raster_values(raster_path,band,x,y):
     with rasterio.open(raster_path) as src:
-        #x = (src.bounds.left + src.bounds.right) / 1.5
-        #y = (src.bounds.bottom + src.bounds.top) / 1.5
         vals = src.sample([(x, y)])
         for val in vals:
+            QgsMessageLog.logMessage("val" + str(val), "debug")
             return val[band-1]
 
 def make_plot(time,duration):

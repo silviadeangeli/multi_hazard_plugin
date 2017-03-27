@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Multi Hazard Risk</string>
   </property>
-  <widget class="QDialogButtonBox" name="button_box">
+  <widget class="QDialogButtonBox" name="button_box2">
    <property name="geometry">
     <rect>
      <x>110</x>
@@ -52,21 +52,57 @@
     <string>Select Location </string>
    </property>
   </widget>
-  <widget class="QPlainTextEdit" name="test">
+  <widget class="QPlainTextEdit" name="xvalue">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>80</y>
-     <width>421</width>
-     <height>79</height>
+     <x>30</x>
+     <y>160</y>
+     <width>171</width>
+     <height>31</height>
     </rect>
+   </property>
+  </widget>
+  <widget class="QPlainTextEdit" name="yvalue">
+   <property name="geometry">
+    <rect>
+     <x>250</x>
+     <y>160</y>
+     <width>171</width>
+     <height>31</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>130</y>
+     <width>60</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>x value</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>250</x>
+     <y>130</y>
+     <width>60</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>y value</string>
    </property>
   </widget>
  </widget>
  <resources/>
  <connections>
   <connection>
-   <sender>button_box</sender>
+   <sender>button_box2</sender>
    <signal>accepted()</signal>
    <receiver>MultiHazardRiskDialogBase</receiver>
    <slot>accept()</slot>
@@ -82,7 +118,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>button_box</sender>
+   <sender>button_box2</sender>
    <signal>rejected()</signal>
    <receiver>MultiHazardRiskDialogBase</receiver>
    <slot>reject()</slot>

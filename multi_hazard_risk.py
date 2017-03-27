@@ -46,6 +46,11 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import random
 from data_plotter import create_rectangle, define_color, obtain_raster_values, make_plot
+from click_for_coordinates import PointTool
+from qgis.core import *
+from qgis.utils import *
+from qgis.gui import *
+
 
 
 class MultiHazardRisk:
@@ -227,40 +232,30 @@ class MultiHazardRisk:
         widget3.addItems(bands_list)
         widget4.addItems(bands_list)
 
+    def coord(self):
+        self.tool_identify = PointTool(iface.mapCanvas(), self.m1, self.t1, self.d1, self.path1, self.m2, self.t2, self.d2, self.path2)
+        iface.mapCanvas().setMapTool(self.tool_identify)
+
+
 
 
     def compute(self):
 
-        m1 = self.dlg.magnitude1.currentText()
-        t1 = self.dlg.time1.currentText()
-        d1 = self.dlg.duration1.currentText()
+        self.m1 = self.dlg.magnitude1.currentText()
+        self.t1 = self.dlg.time1.currentText()
+        self.d1 = self.dlg.duration1.currentText()
 
-        m2 = self.dlg.magnitude2.currentText()
-        t2 = self.dlg.time2.currentText()
-        d2 = self.dlg.duration2.currentText()
+        self.m2 = self.dlg.magnitude2.currentText()
+        self.t2 = self.dlg.time2.currentText()
+        self.d2 = self.dlg.duration2.currentText()
+
+        self.path1 = self.dlg.textBrowser1.toPlainText()
+        self.path2 = self.dlg.textBrowser2.toPlainText()
+        QgsMessageLog.logMessage("Path1 = " + str(self.path1), "debug")
+        QgsMessageLog.logMessage("Path2 = " + str(self.path2), "debug")
 
         self.dlg.close()
         self.dialog_instance.exec_()
-        #QgsMessageLog.logMessage("m1_band="+m1, "debug")
-
-        x= 607496
-        y= 8734503
-
-        m1_val = obtain_raster_values(self.dlg.textBrowser1.toPlainText(),int(m1),x,y)
-        t1_val = obtain_raster_values(self.dlg.textBrowser1.toPlainText(), int(t1),x,y)
-        d1_val = obtain_raster_values(self.dlg.textBrowser1.toPlainText(), int(d1),x,y)
-
-        m2_val = obtain_raster_values(self.filePath, int(m2),x,y)
-        t2_val = obtain_raster_values(self.filePath, int(t2),x,y)
-        d2_val = obtain_raster_values(self.filePath, int(d2),x,y)
-
-        time = [t1_val, t2_val]
-        duration = [d1_val, d2_val]
-
-        #QgsMessageLog.logMessage(time, "debug")
-        #QgsMessageLog.logMessage(duration, "debug")
-
-        make_plot(time, duration)
 
         pass
 
@@ -298,6 +293,12 @@ class MultiHazardRisk:
         #self.dlg.duration1.addItems(bands_list)
 
         self.dlg.button_box.clicked.connect(self.compute)
+
+        self.dialog_instance.location.clicked.connect(self.coord)
+        #self.dialog_instance.button_box2.clicked.connect(self.plot)
+
+
+
 		
         # show the dialog
         self.dlg.show()
