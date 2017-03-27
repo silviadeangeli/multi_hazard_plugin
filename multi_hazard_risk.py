@@ -294,10 +294,7 @@ class MultiHazardRisk:
 
         self.dlg.button_box.clicked.connect(self.compute)
 
-        self.dialog_instance.location.clicked.connect(self.coord)
-        #self.dialog_instance.button_box2.clicked.connect(self.plot)
-
-
+        self.dialog_instance.button_box2.clicked.connect(self.coord)
 
 		
         # show the dialog
