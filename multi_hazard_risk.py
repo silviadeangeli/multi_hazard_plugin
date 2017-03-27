@@ -20,7 +20,7 @@
  *                                                                         *
  ***************************************************************************/
 """
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
+from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, QFileInfo
 from PyQt4.QtGui import QAction, QIcon, QDialog, QLineEdit, QFileDialog
 from qgis.core import QgsMessageLog
 # Initialize Qt resources from file resources.py
@@ -236,8 +236,11 @@ class MultiHazardRisk:
         self.tool_identify = PointTool(iface.mapCanvas(), self.m1, self.t1, self.d1, self.path1, self.m2, self.t2, self.d2, self.path2)
         iface.mapCanvas().setMapTool(self.tool_identify)
 
-
-
+    def add_layer(self, path, name_costumize):
+        fileName = path
+        fileInfo = QFileInfo(fileName)
+        name = fileInfo.baseName()
+        iface.addRasterLayer(path, name + "_" + name_costumize)
 
     def compute(self):
 
@@ -251,8 +254,12 @@ class MultiHazardRisk:
 
         self.path1 = self.dlg.textBrowser1.toPlainText()
         self.path2 = self.dlg.textBrowser2.toPlainText()
-        QgsMessageLog.logMessage("Path1 = " + str(self.path1), "debug")
-        QgsMessageLog.logMessage("Path2 = " + str(self.path2), "debug")
+
+        layer1_name = self.dlg.hazardtype1.currentText()
+        layer2_name = self.dlg.hazardtype2.currentText()
+
+        self.add_layer(self.path1, layer1_name)
+        self.add_layer(self.path2, layer2_name)
 
         self.dlg.close()
         self.dialog_instance.exec_()
