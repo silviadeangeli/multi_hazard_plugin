@@ -29,7 +29,7 @@ import resources
 from multi_hazard_risk_dialog import MultiHazardRiskDialog
 import os.path
 # Import hazards list
-from hazards import hazards_list
+from hazards import hazards_list, forcings
 # Import GDAL for raster calculation
 from osgeo import gdal
 import sys
@@ -233,7 +233,7 @@ class MultiHazardRisk:
         widget4.addItems(bands_list)
 
     def coord(self):
-        self.tool_identify = PointTool(iface.mapCanvas(), self.m1, self.t1, self.d1, self.path1, self.m2, self.t2, self.d2, self.path2)
+        self.tool_identify = PointTool(iface.mapCanvas(), self.m1, self.t1, self.d1, self.path1, self.m2, self.t2, self.d2, self.path2, self.layer1_name, self.layer2_name)
         iface.mapCanvas().setMapTool(self.tool_identify)
 
     def add_layer(self, path, name_costumize):
@@ -255,11 +255,11 @@ class MultiHazardRisk:
         self.path1 = self.dlg.textBrowser1.toPlainText()
         self.path2 = self.dlg.textBrowser2.toPlainText()
 
-        layer1_name = self.dlg.hazardtype1.currentText()
-        layer2_name = self.dlg.hazardtype2.currentText()
+        self.layer1_name = self.dlg.hazardtype1.currentText()
+        self.layer2_name = self.dlg.hazardtype2.currentText()
 
-        self.add_layer(self.path1, layer1_name)
-        self.add_layer(self.path2, layer2_name)
+        self.add_layer(self.path1, self.layer1_name)
+        self.add_layer(self.path2, self.layer2_name)
 
         self.dlg.close()
         self.dialog_instance.exec_()
@@ -286,18 +286,12 @@ class MultiHazardRisk:
         self.dlg.browse2.clicked.connect(partial(self.single_browse, widget=self.dlg.textBrowser2, widget2=self.dlg.magnitude2, widget3=self.dlg.duration2, widget4=self.dlg.time2, ext='*.tif'))
         self.dlg.update()
 
-        #if self.filePath:
-            #partial(self.bandlist, widget=self.dlg.magnitude1, rasterpath= self.filePath)
-            #self.filePath = ""
-
+        self.dlg.hazardparam1.addItems(forcings[str(self.dlg.hazardtype1.currentText())])
+        self.dlg.update()
         #Browser button for exposure
         #self.dlg.browseE1.clicked.connect(partial(self.single_browse, widget=self.dlg.textBrowserE1, ext='*.shp'))
         #self.dlg.update()
 
-
-        #self.dlg.magnitude1.addItems(bands_list)
-        #self.dlg.time1.addItems(bands_list)
-        #self.dlg.duration1.addItems(bands_list)
 
         self.dlg.button_box.clicked.connect(self.compute)
 

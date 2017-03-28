@@ -5,7 +5,7 @@ from data_plotter import create_rectangle, define_color, obtain_raster_values, m
 
 
 class PointTool(QgsMapTool):
-    def __init__(self, canvas, m1, t1, d1, path1, m2, t2, d2, path2):
+    def __init__(self, canvas, m1, t1, d1, path1, m2, t2, d2, path2, layer1_name, layer2_name):
         QgsMapTool.__init__(self, canvas)
         self.canvas = canvas
         self.m1 = m1
@@ -16,6 +16,8 @@ class PointTool(QgsMapTool):
         self.t2 = t2
         self.d2 = d2
         self.path2 = path2
+        self.layer1_name = layer1_name
+        self.layer2_name = layer2_name
 
     def canvasPressEvent(self, event):
         pass
@@ -65,13 +67,15 @@ class PointTool(QgsMapTool):
         time = [t1_val, t2_val]
         duration = [d1_val, d2_val]
         magnitude = [m1_val, m2_val]
+
+        hazards = (str(self.layer1_name), str(self.layer2_name))
         QgsMessageLog.logMessage("time"+str(time), "debug")
         QgsMessageLog.logMessage("duration"+str(duration), "debug")
         QgsMessageLog.logMessage("magnitude"+str(magnitude), "debug")
     # QgsMessageLog.logMessage(time, "debug")
     # QgsMessageLog.logMessage(duration, "debug")
 
-        make_plot(time, duration, magnitude)
+        make_plot(time, duration, magnitude, hazards)
 
 
 
