@@ -64,18 +64,14 @@ class PointTool(QgsMapTool):
 
         time = [t1_val, t2_val]
         duration = [d1_val, d2_val]
+        magnitude = [m1_val, m2_val]
         QgsMessageLog.logMessage("time"+str(time), "debug")
         QgsMessageLog.logMessage("duration"+str(duration), "debug")
+        QgsMessageLog.logMessage("magnitude"+str(magnitude), "debug")
     # QgsMessageLog.logMessage(time, "debug")
     # QgsMessageLog.logMessage(duration, "debug")
 
-        make_plot(time, duration)
+        make_plot(time, duration, magnitude)
 
 
-#    def canvasReleaseEvent(self, mouseEvent):
-#        qgsPoint = self.toMapCoordinates(mouseEvent.pos())
-#        self.x = qgsPoint.x()
-#        self.y = qgsPoint.y()
-#        QgsMessageLog.logMessage("x="+self.x, "debug")
-#        QgsMessageLog.logMessage("y="+self.y, "debug")
 
