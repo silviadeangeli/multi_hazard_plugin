@@ -35,8 +35,6 @@ class PointTool(QgsMapTool):
         y = event.pos().y()
 
         point = self.canvas.getCoordinateTransform().toMapCoordinates(x, y)
-        QgsMessageLog.logMessage("PointTool x=" + str(point.x()), "debug")
-        QgsMessageLog.logMessage("PointTool y=" + str(point.y()), "debug")
         self.plot(point.x(),point.y())
 
 
@@ -69,11 +67,6 @@ class PointTool(QgsMapTool):
         magnitude = [m1_val, m2_val]
 
         hazards = (str(self.layer1_name), str(self.layer2_name))
-        QgsMessageLog.logMessage("time"+str(time), "debug")
-        QgsMessageLog.logMessage("duration"+str(duration), "debug")
-        QgsMessageLog.logMessage("magnitude"+str(magnitude), "debug")
-    # QgsMessageLog.logMessage(time, "debug")
-    # QgsMessageLog.logMessage(duration, "debug")
 
         make_plot(time, duration, magnitude, hazards)
 

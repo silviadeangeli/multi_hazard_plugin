@@ -20,7 +20,7 @@
  *                                                                         *
  ***************************************************************************/
 """
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, QFileInfo
+from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, QFileInfo, SIGNAL
 from PyQt4.QtGui import QAction, QIcon, QDialog, QLineEdit, QFileDialog
 from qgis.core import QgsMessageLog
 # Initialize Qt resources from file resources.py
@@ -229,8 +229,11 @@ class MultiHazardRisk:
             if rasterband is None:
                 continue
         widget2.addItems(bands_list)
+        widget2.setCurrentIndex(-1)
         widget3.addItems(bands_list)
+        widget3.setCurrentIndex(-1)
         widget4.addItems(bands_list)
+        widget4.setCurrentIndex(-1)
 
     def coord(self):
         self.tool_identify = PointTool(iface.mapCanvas(), self.m1, self.t1, self.d1, self.path1, self.m2, self.t2, self.d2, self.path2, self.layer1_name, self.layer2_name)
@@ -241,6 +244,11 @@ class MultiHazardRisk:
         fileInfo = QFileInfo(fileName)
         name = fileInfo.baseName()
         iface.addRasterLayer(path, name + "_" + name_costumize)
+
+    def add_forcings(self,box_forcings, box_hazards):
+        box_forcings.clear()
+        box_forcings.addItems(forcings[str(box_hazards.currentText())])
+        box_forcings.setCurrentIndex(-1)
 
     def compute(self):
 
@@ -275,8 +283,12 @@ class MultiHazardRisk:
         #layer_list.append(layer.name())
         #self.dlg.layer1.addItems(layer_list)
 
+        self.dlg.hazardtype1.clear()
         self.dlg.hazardtype1.addItems(hazards_list)
+        self.dlg.hazardtype1.setCurrentIndex(-1)
+        self.dlg.hazardtype2.clear()
         self.dlg.hazardtype2.addItems(hazards_list)
+        self.dlg.hazardtype2.setCurrentIndex(-1)
 
         #Browser button for h1
     	self.dlg.browse1.clicked.connect(partial(self.single_browse, widget=self.dlg.textBrowser1, widget2=self.dlg.magnitude1, widget3=self.dlg.duration1, widget4=self.dlg.time1, ext='*.tif'))
@@ -286,17 +298,21 @@ class MultiHazardRisk:
         self.dlg.browse2.clicked.connect(partial(self.single_browse, widget=self.dlg.textBrowser2, widget2=self.dlg.magnitude2, widget3=self.dlg.duration2, widget4=self.dlg.time2, ext='*.tif'))
         self.dlg.update()
 
-        self.dlg.hazardparam1.addItems(forcings[str(self.dlg.hazardtype1.currentText())])
-        self.dlg.update()
+
         #Browser button for exposure
         #self.dlg.browseE1.clicked.connect(partial(self.single_browse, widget=self.dlg.textBrowserE1, ext='*.shp'))
         #self.dlg.update()
 
+        while self.dlg.magnitude1.currentText() == "":
+            self.dlg.button_box.setEnabled(False)
 
         self.dlg.button_box.clicked.connect(self.compute)
 
         self.dialog_instance.button_box2.clicked.connect(self.coord)
 
+        self.dlg.connect(self.dlg.hazardtype1, SIGNAL("currentIndexChanged(const QString&)"),
+                         partial(self.add_forcings, box_forcings=self.dlg.hazardparam1,
+                                 box_hazards=self.dlg.hazardtype1))
 		
         # show the dialog
         self.dlg.show()
@@ -307,3 +323,4 @@ class MultiHazardRisk:
             # Do something useful here - delete the line containing pass and
             # substitute with your code.
             pass
+
