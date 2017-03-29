@@ -303,8 +303,8 @@ class MultiHazardRisk:
         #self.dlg.browseE1.clicked.connect(partial(self.single_browse, widget=self.dlg.textBrowserE1, ext='*.shp'))
         #self.dlg.update()
 
-        while self.dlg.magnitude1.currentText() == "":
-            self.dlg.button_box.setEnabled(False)
+        #while self.dlg.magnitude1.currentText() == "":
+            #self.dlg.button_box.setEnabled(False)
 
         self.dlg.button_box.clicked.connect(self.compute)
 
