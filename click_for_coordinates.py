@@ -3,21 +3,11 @@ from qgis.utils import *
 from qgis.gui import *
 from data_plotter import create_rectangle, define_color, obtain_raster_values, make_plot
 
-
 class PointTool(QgsMapTool):
-    def __init__(self, canvas, m1, t1, d1, path1, m2, t2, d2, path2, layer1_name, layer2_name):
+    def __init__(self, canvas, hazard):
         QgsMapTool.__init__(self, canvas)
         self.canvas = canvas
-        self.m1 = m1
-        self.t1 = t1
-        self.d1 = d1
-        self.path1 = path1
-        self.m2 = m2
-        self.t2 = t2
-        self.d2 = d2
-        self.path2 = path2
-        self.layer1_name = layer1_name
-        self.layer2_name = layer2_name
+        self.hazard = hazard
 
     def canvasPressEvent(self, event):
         pass
@@ -54,21 +44,26 @@ class PointTool(QgsMapTool):
         return True
 
     def plot(self,x,y):
-        m1_val = obtain_raster_values(self.path1, int(self.m1), x, y)
-        t1_val = obtain_raster_values(self.path1, int(self.t1), x, y)
-        d1_val = obtain_raster_values(self.path1, int(self.d1), x, y)
 
-        m2_val = obtain_raster_values(self.path2, int(self.m2), x, y)
-        t2_val = obtain_raster_values(self.path2, int(self.t2), x, y)
-        d2_val = obtain_raster_values(self.path2, int(self.d2), x, y)
+        time = []
+        duration = []
+        magnitude = []
+        hazards_names = []
+        hazards_forcings = []
 
-        time = [t1_val, t2_val]
-        duration = [d1_val, d2_val]
-        magnitude = [m1_val, m2_val]
+        for hazard_i in self.hazard:
+            m_val = obtain_raster_values(hazard_i.path, int(hazard_i.m), x, y)
+            t_val = obtain_raster_values(hazard_i.path, int(hazard_i.t), x, y)
+            d_val = obtain_raster_values(hazard_i.path, int(hazard_i.d), x, y)
 
-        hazards = (str(self.layer1_name), str(self.layer2_name))
 
-        make_plot(time, duration, magnitude, hazards)
+            time.append(t_val)
+            duration.append(d_val)
+            magnitude.append(m_val)
+            hazards_names.append(hazard_i.hazard_type)
+            hazards_forcings.append(hazard_i.hazard_forcing)
+
+        make_plot(time, duration, magnitude, hazards_names, hazards_forcings, max(magnitude),x,y)
 
 
 

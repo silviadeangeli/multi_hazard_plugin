@@ -21,7 +21,7 @@
  ***************************************************************************/
 """
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, QFileInfo, SIGNAL
-from PyQt4.QtGui import QAction, QIcon, QDialog, QLineEdit, QFileDialog
+from PyQt4.QtGui import QAction, QIcon, QDialog, QLineEdit, QFileDialog, QMessageBox
 from qgis.core import QgsMessageLog
 # Initialize Qt resources from file resources.py
 import resources
@@ -50,13 +50,14 @@ from click_for_coordinates import PointTool
 from qgis.core import *
 from qgis.utils import *
 from qgis.gui import *
-
+from hazard_structure import hazard
 
 
 class MultiHazardRisk:
     """QGIS Plugin Implementation."""
     filePath = None
-
+    hazards = []
+    message_list = ""
     def __init__(self, iface):
         """Constructor.
 
@@ -228,6 +229,9 @@ class MultiHazardRisk:
             bands_list.append(str(rasterband.GetBand()))
             if rasterband is None:
                 continue
+        widget2.clear()
+        widget3.clear()
+        widget4.clear()
         widget2.addItems(bands_list)
         widget2.setCurrentIndex(-1)
         widget3.addItems(bands_list)
@@ -236,7 +240,7 @@ class MultiHazardRisk:
         widget4.setCurrentIndex(-1)
 
     def coord(self):
-        self.tool_identify = PointTool(iface.mapCanvas(), self.m1, self.t1, self.d1, self.path1, self.m2, self.t2, self.d2, self.path2, self.layer1_name, self.layer2_name)
+        self.tool_identify = PointTool(iface.mapCanvas(), self.hazards)
         iface.mapCanvas().setMapTool(self.tool_identify)
 
     def add_layer(self, path, name_costumize):
@@ -250,24 +254,76 @@ class MultiHazardRisk:
         box_forcings.addItems(forcings[str(box_hazards.currentText())])
         box_forcings.setCurrentIndex(-1)
 
+    def add_message(self,text,title):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
+        msg.setText(text)
+        #msg.setInformativeText("This is additional information")
+        msg.setWindowTitle(title)
+        msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+        msg.exec_()
+
+    def store_values(self):
+
+        #Stores the values contained in the GUI
+
+        m1 = self.dlg.magnitude1.currentText()
+        t1 = self.dlg.time1.currentText()
+        d1 = self.dlg.duration1.currentText()
+
+        m2 = self.dlg.magnitude2.currentText()
+        t2 = self.dlg.time2.currentText()
+        d2 = self.dlg.duration2.currentText()
+
+        path1 = self.dlg.textBrowser1.toPlainText()
+        path2 = self.dlg.textBrowser2.toPlainText()
+
+        hazard_type1 = self.dlg.hazardtype1.currentText()
+        hazard_type2 = self.dlg.hazardtype2.currentText()
+
+        hazard_forcing1 = self.dlg.hazardparam1.currentText()
+        hazard_forcing2 = self.dlg.hazardparam2.currentText()
+
+        hazard_1 = hazard(m1, t1, d1, path1, hazard_type1, hazard_forcing1)
+        hazard_2 = hazard(m2, t2, d2, path2, hazard_type2, hazard_forcing2)
+        if hazard_1.path != "":
+            self.hazards.append(hazard_1)
+            self.message_list = self.message_list +  '\n'  + (hazard_1.name + " as " + hazard_1.hazard_type)
+        if hazard_2.path != "":
+            self.hazards.append(hazard_2)
+            self.message_list = self.message_list + '\n' + (hazard_2.name + " as " + hazard_2.hazard_type)
+
+        if len(self.hazards) >= 1:
+            self.dlg.message_box.setPlainText('The following layers have been saved up to now:' + self.message_list)
+            self.dlg.button_box.setEnabled(True)
+        else:
+            self.add_message('No hazards have been uploaded yet', title='Hazards upload')
+
+        #Cleans the GUI to insert new hazards
+
+        self.dlg.magnitude1.setCurrentIndex(-1)
+        self.dlg.time1.setCurrentIndex(-1)
+        self.dlg.duration1.setCurrentIndex(-1)
+
+        self.dlg.magnitude2.setCurrentIndex(-1)
+        self.dlg.time2.setCurrentIndex(-1)
+        self.dlg.duration2.setCurrentIndex(-1)
+
+        self.dlg.textBrowser1.clear()
+        self.dlg.textBrowser2.clear()
+
+        self.dlg.hazardtype1.setCurrentIndex(-1)
+        self.dlg.hazardtype2.setCurrentIndex(-1)
+
+        self.dlg.hazardparam1.setCurrentIndex(-1)
+        self.dlg.hazardparam2.setCurrentIndex(-1)
+
+        for hazard_i in self.hazards:
+            hazard_i.print_debug()
+
     def compute(self):
-
-        self.m1 = self.dlg.magnitude1.currentText()
-        self.t1 = self.dlg.time1.currentText()
-        self.d1 = self.dlg.duration1.currentText()
-
-        self.m2 = self.dlg.magnitude2.currentText()
-        self.t2 = self.dlg.time2.currentText()
-        self.d2 = self.dlg.duration2.currentText()
-
-        self.path1 = self.dlg.textBrowser1.toPlainText()
-        self.path2 = self.dlg.textBrowser2.toPlainText()
-
-        self.layer1_name = self.dlg.hazardtype1.currentText()
-        self.layer2_name = self.dlg.hazardtype2.currentText()
-
-        self.add_layer(self.path1, self.layer1_name)
-        self.add_layer(self.path2, self.layer2_name)
+        for hazard_i in self.hazards:
+            self.add_layer(hazard_i.path, hazard_i.hazard_type)
 
         self.dlg.close()
         self.dialog_instance.exec_()
@@ -283,7 +339,24 @@ class MultiHazardRisk:
         #layer_list.append(layer.name())
         #self.dlg.layer1.addItems(layer_list)
 
+
+        #All the GUI is cleaned
         self.dlg.hazardtype1.clear()
+        self.dlg.hazardtype2.clear()
+        self.dlg.magnitude1.clear()
+        self.dlg.magnitude2.clear()
+        self.dlg.duration1.clear()
+        self.dlg.duration2.clear()
+        self.dlg.time1.clear()
+        self.dlg.time2.clear()
+        self.dlg.textBrowser1.clear()
+        self.dlg.textBrowser2.clear()
+        self.dlg.message_box.clear()
+
+        #The list of the stored hazards is cleaned
+        self.hazards = []
+
+        self.dlg.button_box.setEnabled(False)
         self.dlg.hazardtype1.addItems(hazards_list)
         self.dlg.hazardtype1.setCurrentIndex(-1)
         self.dlg.hazardtype2.clear()
@@ -306,7 +379,7 @@ class MultiHazardRisk:
         #while self.dlg.magnitude1.currentText() == "":
             #self.dlg.button_box.setEnabled(False)
 
-        self.dlg.button_box.clicked.connect(self.compute)
+        self.dlg.button_box.accepted.connect(self.compute)
 
         self.dialog_instance.button_box2.clicked.connect(self.coord)
 
@@ -317,7 +390,9 @@ class MultiHazardRisk:
         self.dlg.connect(self.dlg.hazardtype2, SIGNAL("currentIndexChanged(const QString&)"),
                          partial(self.add_forcings, box_forcings=self.dlg.hazardparam2,
                                  box_hazards=self.dlg.hazardtype2))
-		
+
+        self.dlg.save_hazards.clicked.connect(self.store_values)
+
         # show the dialog
         self.dlg.show()
         # Run the dialog event loop

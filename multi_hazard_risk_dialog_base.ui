@@ -6,18 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>452</width>
-    <height>599</height>
+    <width>527</width>
+    <height>701</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Multi Hazard Risk</string>
   </property>
   <widget class="QDialogButtonBox" name="button_box">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="geometry">
     <rect>
-     <x>110</x>
-     <y>560</y>
+     <x>190</x>
+     <y>670</y>
      <width>341</width>
      <height>32</height>
     </rect>
@@ -33,9 +36,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>10</y>
-     <width>431</width>
-     <height>531</height>
+     <y>20</y>
+     <width>511</width>
+     <height>641</height>
     </rect>
    </property>
    <property name="currentIndex">
@@ -51,9 +54,9 @@
     <widget class="QLabel" name="label">
      <property name="geometry">
       <rect>
-       <x>160</x>
+       <x>200</x>
        <y>0</y>
-       <width>101</width>
+       <width>161</width>
        <height>20</height>
       </rect>
      </property>
@@ -64,13 +67,13 @@
       </font>
      </property>
      <property name="text">
-      <string>First Hazard</string>
+      <string>Hazard 1</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_2">
      <property name="geometry">
       <rect>
-       <x>160</x>
+       <x>200</x>
        <y>230</y>
        <width>101</width>
        <height>16</height>
@@ -83,20 +86,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Second Hazard</string>
-     </property>
-    </widget>
-    <widget class="QToolButton" name="add_hazard">
-     <property name="geometry">
-      <rect>
-       <x>280</x>
-       <y>470</y>
-       <width>141</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Add another hazard </string>
+      <string>Hazard 2</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_3">
@@ -124,13 +114,16 @@
      <property name="text">
       <string>Hazard type</string>
      </property>
+     <property name="buddy">
+      <cstring>hazardtype1</cstring>
+     </property>
     </widget>
     <widget class="QComboBox" name="hazardparam1">
      <property name="geometry">
       <rect>
-       <x>140</x>
+       <x>230</x>
        <y>100</y>
-       <width>281</width>
+       <width>261</width>
        <height>31</height>
       </rect>
      </property>
@@ -138,21 +131,27 @@
     <widget class="QComboBox" name="time1">
      <property name="geometry">
       <rect>
-       <x>140</x>
+       <x>230</x>
        <y>160</y>
-       <width>281</width>
+       <width>261</width>
        <height>31</height>
       </rect>
+     </property>
+     <property name="toolTip">
+      <string>Select from your raster which is the band where information on the initial time of the hazard is stored</string>
      </property>
     </widget>
     <widget class="QComboBox" name="magnitude1">
      <property name="geometry">
       <rect>
-       <x>140</x>
+       <x>230</x>
        <y>130</y>
-       <width>281</width>
+       <width>261</width>
        <height>31</height>
       </rect>
+     </property>
+     <property name="toolTip">
+      <string>Select from your raster which is the band where magnitude/intensity information is stored</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_5">
@@ -164,8 +163,17 @@
        <height>31</height>
       </rect>
      </property>
+     <property name="toolTip">
+      <string>Select from your raster which is the band where magnitude/intensity information is stored</string>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
      <property name="text">
-      <string>Magnitude/Intensity  </string>
+      <string>Magnitude/Intensity  band</string>
+     </property>
+     <property name="buddy">
+      <cstring>magnitude1</cstring>
      </property>
     </widget>
     <widget class="QLabel" name="label_6">
@@ -177,8 +185,14 @@
        <height>31</height>
       </rect>
      </property>
+     <property name="toolTip">
+      <string>Select from your raster which is the band where information on the initial time of the hazard is stored</string>
+     </property>
      <property name="text">
-      <string>Initial time </string>
+      <string>Initial time band</string>
+     </property>
+     <property name="buddy">
+      <cstring>time1</cstring>
      </property>
     </widget>
     <widget class="QLabel" name="label_8">
@@ -190,18 +204,27 @@
        <height>31</height>
       </rect>
      </property>
+     <property name="toolTip">
+      <string>Select from your raster which is the band where information on the duration of the hazard is stored</string>
+     </property>
      <property name="text">
-      <string>Duration</string>
+      <string>Duration band</string>
+     </property>
+     <property name="buddy">
+      <cstring>duration1</cstring>
      </property>
     </widget>
     <widget class="QComboBox" name="duration1">
      <property name="geometry">
       <rect>
-       <x>140</x>
+       <x>230</x>
        <y>190</y>
-       <width>281</width>
+       <width>261</width>
        <height>31</height>
       </rect>
+     </property>
+     <property name="toolTip">
+      <string>Select from your raster which is the band where information on the duration of the hazard is stored</string>
      </property>
     </widget>
     <widget class="QPushButton" name="browse1">
@@ -220,8 +243,8 @@
     <widget class="QPlainTextEdit" name="textBrowser1">
      <property name="geometry">
       <rect>
-       <x>144</x>
-       <y>24</y>
+       <x>230</x>
+       <y>20</y>
        <width>261</width>
        <height>41</height>
       </rect>
@@ -231,7 +254,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>230</y>
+       <y>240</y>
        <width>101</width>
        <height>31</height>
       </rect>
@@ -243,8 +266,8 @@
     <widget class="QPlainTextEdit" name="textBrowser2">
      <property name="geometry">
       <rect>
-       <x>140</x>
-       <y>250</y>
+       <x>230</x>
+       <y>260</y>
        <width>261</width>
        <height>41</height>
       </rect>
@@ -254,7 +277,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>330</y>
+       <y>340</y>
        <width>121</width>
        <height>31</height>
       </rect>
@@ -262,91 +285,121 @@
      <property name="text">
       <string>Hazard parameter</string>
      </property>
+     <property name="buddy">
+      <cstring>hazardparam2</cstring>
+     </property>
     </widget>
     <widget class="QLabel" name="label_10">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>360</y>
+       <y>370</y>
        <width>241</width>
        <height>31</height>
       </rect>
      </property>
+     <property name="toolTip">
+      <string>Select from your raster which is the band where magnitude/intensity information is stored</string>
+     </property>
      <property name="text">
-      <string>Magnitude/Intensity  </string>
+      <string>Magnitude/Intensity band  </string>
+     </property>
+     <property name="buddy">
+      <cstring>magnitude2</cstring>
      </property>
     </widget>
     <widget class="QLabel" name="label_11">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>390</y>
+       <y>400</y>
        <width>241</width>
        <height>31</height>
       </rect>
      </property>
+     <property name="toolTip">
+      <string>Select from your raster which is the band where information on the initial time of the hazard is stored</string>
+     </property>
      <property name="text">
-      <string>Initial time </string>
+      <string>Initial time band</string>
+     </property>
+     <property name="buddy">
+      <cstring>time2</cstring>
      </property>
     </widget>
     <widget class="QLabel" name="label_12">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>420</y>
+       <y>430</y>
        <width>241</width>
        <height>31</height>
       </rect>
      </property>
+     <property name="toolTip">
+      <string>Select from your raster which is the band where information on the duration of the hazard is stored</string>
+     </property>
      <property name="text">
-      <string>Duration</string>
+      <string>Duration band</string>
+     </property>
+     <property name="buddy">
+      <cstring>duration2</cstring>
      </property>
     </widget>
     <widget class="QComboBox" name="hazardtype2">
      <property name="geometry">
       <rect>
-       <x>140</x>
+       <x>230</x>
        <y>300</y>
-       <width>281</width>
-       <height>31</height>
+       <width>261</width>
+       <height>60</height>
       </rect>
      </property>
     </widget>
     <widget class="QComboBox" name="magnitude2">
      <property name="geometry">
       <rect>
-       <x>140</x>
+       <x>230</x>
        <y>360</y>
-       <width>281</width>
-       <height>31</height>
+       <width>261</width>
+       <height>60</height>
       </rect>
+     </property>
+     <property name="toolTip">
+      <string>Select from your raster which is the band where magnitude/intensity information is stored</string>
      </property>
     </widget>
     <widget class="QComboBox" name="time2">
      <property name="geometry">
       <rect>
-       <x>140</x>
+       <x>230</x>
        <y>390</y>
-       <width>281</width>
-       <height>31</height>
+       <width>261</width>
+       <height>60</height>
       </rect>
+     </property>
+     <property name="toolTip">
+      <string>Select from your raster which is the band where information on the initial time of the hazard is stored</string>
      </property>
     </widget>
     <widget class="QComboBox" name="duration2">
      <property name="geometry">
       <rect>
-       <x>140</x>
+       <x>230</x>
        <y>420</y>
-       <width>281</width>
-       <height>31</height>
+       <width>261</width>
+       <height>60</height>
       </rect>
+     </property>
+     <property name="toolTip">
+      <string>Select from your raster which is the band where information on the duration of the hazard is stored</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_13">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>300</y>
+       <y>310</y>
        <width>241</width>
        <height>31</height>
       </rect>
@@ -354,14 +407,17 @@
      <property name="text">
       <string>Hazard type</string>
      </property>
+     <property name="buddy">
+      <cstring>hazardtype2</cstring>
+     </property>
     </widget>
     <widget class="QComboBox" name="hazardparam2">
      <property name="geometry">
       <rect>
-       <x>140</x>
-       <y>330</y>
-       <width>281</width>
-       <height>31</height>
+       <x>230</x>
+       <y>334</y>
+       <width>261</width>
+       <height>50</height>
       </rect>
      </property>
     </widget>
@@ -377,13 +433,16 @@
      <property name="text">
       <string>Hazard parameter</string>
      </property>
+     <property name="buddy">
+      <cstring>hazardparam1</cstring>
+     </property>
     </widget>
     <widget class="QComboBox" name="hazardtype1">
      <property name="geometry">
       <rect>
-       <x>140</x>
+       <x>229</x>
        <y>70</y>
-       <width>281</width>
+       <width>261</width>
        <height>31</height>
       </rect>
      </property>
@@ -392,13 +451,36 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>260</y>
+       <y>270</y>
        <width>113</width>
        <height>32</height>
       </rect>
      </property>
      <property name="text">
       <string>Browse...</string>
+     </property>
+    </widget>
+    <widget class="QToolButton" name="save_hazards">
+     <property name="geometry">
+      <rect>
+       <x>340</x>
+       <y>480</y>
+       <width>141</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Save hazards </string>
+     </property>
+    </widget>
+    <widget class="QPlainTextEdit" name="message_box">
+     <property name="geometry">
+      <rect>
+       <x>13</x>
+       <y>527</y>
+       <width>481</width>
+       <height>81</height>
+      </rect>
      </property>
     </widget>
    </widget>
@@ -450,6 +532,9 @@
      </property>
      <property name="text">
       <string>Exposure Cathegory</string>
+     </property>
+     <property name="buddy">
+      <cstring>time1_2</cstring>
      </property>
     </widget>
     <widget class="QLabel" name="label_16">
