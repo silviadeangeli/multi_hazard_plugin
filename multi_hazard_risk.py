@@ -37,7 +37,6 @@ from functools import partial
 import Tkinter as tk
 from show_results import ShowResults
 from matplotlib.figure import Figure
-
 import numpy as np
 from PyQt4 import QtGui
 
@@ -50,12 +49,13 @@ from click_for_coordinates import PointTool
 from qgis.core import *
 from qgis.utils import *
 from qgis.gui import *
-
+from hazard_structure import hazard
 
 
 class MultiHazardRisk:
     """QGIS Plugin Implementation."""
     filePath = None
+    hazards = []
 
     def __init__(self, iface):
         """Constructor.
@@ -250,21 +250,34 @@ class MultiHazardRisk:
         box_forcings.addItems(forcings[str(box_hazards.currentText())])
         box_forcings.setCurrentIndex(-1)
 
+    def store_values(self):
+
+        m1 = self.dlg.magnitude1.currentText()
+        t1 = self.dlg.time1.currentText()
+        d1 = self.dlg.duration1.currentText()
+
+        m2 = self.dlg.magnitude2.currentText()
+        t2 = self.dlg.time2.currentText()
+        d2 = self.dlg.duration2.currentText()
+
+        path1 = self.dlg.textBrowser1.toPlainText()
+        path2 = self.dlg.textBrowser2.toPlainText()
+
+        hazard_type1 = self.dlg.hazardtype1.currentText()
+        hazard_type2 = self.dlg.hazardtype2.currentText()
+
+        hazard_forcing1 = self.dlg.hazardparam1.currentText()
+        hazard_forcing2 = self.dlg.hazardparam2.currentText()
+
+        hazard_1 = hazard(m1, t1, d1, path1, hazard_type1, hazard_forcing1)
+        hazard_2 = hazard(m2, t2, d2, path2, hazard_type2, hazard_forcing2)
+        self.hazards.append(hazard_1)
+        self.hazards.append(hazard_2)
+
+        for hazard_i in self.hazards:
+            hazard_i.print_debug()
+
     def compute(self):
-
-        self.m1 = self.dlg.magnitude1.currentText()
-        self.t1 = self.dlg.time1.currentText()
-        self.d1 = self.dlg.duration1.currentText()
-
-        self.m2 = self.dlg.magnitude2.currentText()
-        self.t2 = self.dlg.time2.currentText()
-        self.d2 = self.dlg.duration2.currentText()
-
-        self.path1 = self.dlg.textBrowser1.toPlainText()
-        self.path2 = self.dlg.textBrowser2.toPlainText()
-
-        self.layer1_name = self.dlg.hazardtype1.currentText()
-        self.layer2_name = self.dlg.hazardtype2.currentText()
 
         self.add_layer(self.path1, self.layer1_name)
         self.add_layer(self.path2, self.layer2_name)
@@ -306,14 +319,20 @@ class MultiHazardRisk:
         #while self.dlg.magnitude1.currentText() == "":
             #self.dlg.button_box.setEnabled(False)
 
-        self.dlg.button_box.clicked.connect(self.compute)
+        #self.dlg.button_box.clicked.connect(self.compute)
 
-        self.dialog_instance.button_box2.clicked.connect(self.coord)
+        #self.dialog_instance.button_box2.clicked.connect(self.coord)
 
         self.dlg.connect(self.dlg.hazardtype1, SIGNAL("currentIndexChanged(const QString&)"),
                          partial(self.add_forcings, box_forcings=self.dlg.hazardparam1,
                                  box_hazards=self.dlg.hazardtype1))
-		
+
+        self.dlg.connect(self.dlg.hazardtype2, SIGNAL("currentIndexChanged(const QString&)"),
+                         partial(self.add_forcings, box_forcings=self.dlg.hazardparam2,
+                                 box_hazards=self.dlg.hazardtype2))
+
+        self.dlg.save_hazards.clicked.connect(self.store_values)
+
         # show the dialog
         self.dlg.show()
         # Run the dialog event loop

@@ -164,6 +164,9 @@
        <height>31</height>
       </rect>
      </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
      <property name="text">
       <string>Magnitude/Intensity  </string>
      </property>
@@ -399,6 +402,19 @@
      </property>
      <property name="text">
       <string>Browse...</string>
+     </property>
+    </widget>
+    <widget class="QToolButton" name="save_hazards">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>470</y>
+       <width>141</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Save hazards</string>
      </property>
     </widget>
    </widget>
