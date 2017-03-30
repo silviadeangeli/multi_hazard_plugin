@@ -27,17 +27,17 @@ def obtain_raster_values(raster_path,band,x,y):
             QgsMessageLog.logMessage("val" + str(val), "debug")
             return val[band-1]
 
-def make_plot(time,duration,magnitude,hazards):
+def make_plot(time,duration,magnitude,hazards, parameters):
     fig, ax = plt.subplots()
     T = []
     hazards_number = []
     for k in range(len(time)):
-        ax.add_patch(create_rectangle(time[k], duration[k], magnitude[k], 10+k*10, define_color(len(time),k,'Spectral'),1, str(hazards[k]) ))
+        ax.add_patch(create_rectangle(time[k], duration[k], magnitude[k], 10+k*20, define_color(len(time),k,'Spectral'),1, str(hazards[k]) ))
         T.append(10+k*10+magnitude[k]/2)
         hazards_number.append('Hazard ' + str(k+1))
-        plt.text(time[k]+duration[k]/2, 11+k*10+magnitude[k], 'forcing :'+ str(magnitude[k]))
+        plt.text(time[k]+duration[k]/2, 11+k*10+magnitude[k], str(parameters[k]) +': '+ str(magnitude[k]))
     for k in range(len(time)):
-        ax.add_patch(create_rectangle(time[k], duration[k], magnitude[k], -0.2, define_color(len(time),k,'Spectral'),0.5, ""))
+        ax.add_patch(create_rectangle(time[k], duration[k], magnitude[k], -0.5, define_color(len(time),k,'Spectral'),0.5, ""))
 
     ax.autoscale(True, axis='both', tight=None)
     #ax.yaxis.set_visible(False)

@@ -20,3 +20,5 @@ class hazard():
         QgsMessageLog.logMessage("Magnitude band of" + self.name + ": " + self.m, "debug")
         QgsMessageLog.logMessage("Initial time band of" + self.name + ": "+ self.t, "debug")
         QgsMessageLog.logMessage("Duration band of"+ self.name + ": " + self.d, "debug")
+
+

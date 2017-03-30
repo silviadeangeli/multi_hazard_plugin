@@ -21,7 +21,7 @@
  ***************************************************************************/
 """
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, QFileInfo, SIGNAL
-from PyQt4.QtGui import QAction, QIcon, QDialog, QLineEdit, QFileDialog
+from PyQt4.QtGui import QAction, QIcon, QDialog, QLineEdit, QFileDialog, QMessageBox
 from qgis.core import QgsMessageLog
 # Initialize Qt resources from file resources.py
 import resources
@@ -56,7 +56,7 @@ class MultiHazardRisk:
     """QGIS Plugin Implementation."""
     filePath = None
     hazards = []
-
+    message_list = []
     def __init__(self, iface):
         """Constructor.
 
@@ -236,7 +236,7 @@ class MultiHazardRisk:
         widget4.setCurrentIndex(-1)
 
     def coord(self):
-        self.tool_identify = PointTool(iface.mapCanvas(), self.m1, self.t1, self.d1, self.path1, self.m2, self.t2, self.d2, self.path2, self.layer1_name, self.layer2_name)
+        self.tool_identify = PointTool(iface.mapCanvas(), self.hazards)
         iface.mapCanvas().setMapTool(self.tool_identify)
 
     def add_layer(self, path, name_costumize):
@@ -250,7 +250,18 @@ class MultiHazardRisk:
         box_forcings.addItems(forcings[str(box_hazards.currentText())])
         box_forcings.setCurrentIndex(-1)
 
+    def add_message(self,text,title):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
+        msg.setText(text)
+        #msg.setInformativeText("This is additional information")
+        msg.setWindowTitle(title)
+        msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+        msg.exec_()
+
     def store_values(self):
+
+        #Stores the values contained in the GUI
 
         m1 = self.dlg.magnitude1.currentText()
         t1 = self.dlg.time1.currentText()
@@ -271,16 +282,41 @@ class MultiHazardRisk:
 
         hazard_1 = hazard(m1, t1, d1, path1, hazard_type1, hazard_forcing1)
         hazard_2 = hazard(m2, t2, d2, path2, hazard_type2, hazard_forcing2)
-        self.hazards.append(hazard_1)
-        self.hazards.append(hazard_2)
+        if hazard_1.path != "":
+            self.hazards.append(hazard_1)
+            self.message_list.append(hazard_1.name + " as " + hazard_1.hazard_type)
+        if hazard_2.path != "":
+            self.hazards.append(hazard_2)
+            self.message_list.append(hazard_2.name + " as " + hazard_2.hazard_type)
+
+        self.add_message('The following layers have been saved up to now:' + str(self.message_list), title = 'Hazards upload')
+
+
+        #Cleans the GUI to insert new hazards
+
+        self.dlg.magnitude1.setCurrentIndex(-1)
+        self.dlg.time1.setCurrentIndex(-1)
+        self.dlg.duration1.setCurrentIndex(-1)
+
+        self.dlg.magnitude2.setCurrentIndex(-1)
+        self.dlg.time2.setCurrentIndex(-1)
+        self.dlg.duration2.setCurrentIndex(-1)
+
+        self.dlg.textBrowser1.clear()
+        self.dlg.textBrowser2.clear()
+
+        self.dlg.hazardtype1.setCurrentIndex(-1)
+        self.dlg.hazardtype2.setCurrentIndex(-1)
+
+        self.dlg.hazardparam1.setCurrentIndex(-1)
+        self.dlg.hazardparam2.setCurrentIndex(-1)
 
         for hazard_i in self.hazards:
             hazard_i.print_debug()
 
     def compute(self):
-
-        self.add_layer(self.path1, self.layer1_name)
-        self.add_layer(self.path2, self.layer2_name)
+        for hazard_i in self.hazards:
+            self.add_layer(hazard_i.path, hazard_i.hazard_type)
 
         self.dlg.close()
         self.dialog_instance.exec_()
@@ -316,12 +352,10 @@ class MultiHazardRisk:
         #self.dlg.browseE1.clicked.connect(partial(self.single_browse, widget=self.dlg.textBrowserE1, ext='*.shp'))
         #self.dlg.update()
 
-        #while self.dlg.magnitude1.currentText() == "":
-            #self.dlg.button_box.setEnabled(False)
 
-        #self.dlg.button_box.clicked.connect(self.compute)
+        self.dlg.button_box.accepted.connect(self.compute)
 
-        #self.dialog_instance.button_box2.clicked.connect(self.coord)
+        self.dialog_instance.button_box2.clicked.connect(self.coord)
 
         self.dlg.connect(self.dlg.hazardtype1, SIGNAL("currentIndexChanged(const QString&)"),
                          partial(self.add_forcings, box_forcings=self.dlg.hazardparam1,
@@ -332,6 +366,8 @@ class MultiHazardRisk:
                                  box_hazards=self.dlg.hazardtype2))
 
         self.dlg.save_hazards.clicked.connect(self.store_values)
+        self.dlg.save_hazards.clicked.connect(partial(self.add_message, text= ('The following layers have been saved up to now:'+ str(self.message_list)), title='Hazards upload'))
+
 
         # show the dialog
         self.dlg.show()
