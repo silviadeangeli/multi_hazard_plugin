@@ -7,17 +7,20 @@
     <x>0</x>
     <y>0</y>
     <width>527</width>
-    <height>605</height>
+    <height>701</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Multi Hazard Risk</string>
   </property>
   <widget class="QDialogButtonBox" name="button_box">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="geometry">
     <rect>
-     <x>160</x>
-     <y>570</y>
+     <x>190</x>
+     <y>670</y>
      <width>341</width>
      <height>32</height>
     </rect>
@@ -35,7 +38,7 @@
      <x>10</x>
      <y>20</y>
      <width>511</width>
-     <height>551</height>
+     <height>641</height>
     </rect>
    </property>
    <property name="currentIndex">
@@ -470,36 +473,16 @@
       <string>Save hazards </string>
      </property>
     </widget>
-    <zorder>label</zorder>
-    <zorder>label_2</zorder>
-    <zorder>label_3</zorder>
-    <zorder>label_4</zorder>
-    <zorder>hazardparam1</zorder>
-    <zorder>time1</zorder>
-    <zorder>magnitude1</zorder>
-    <zorder>label_5</zorder>
-    <zorder>label_6</zorder>
-    <zorder>label_8</zorder>
-    <zorder>duration1</zorder>
-    <zorder>browse1</zorder>
-    <zorder>textBrowser1</zorder>
-    <zorder>label_7</zorder>
-    <zorder>textBrowser2</zorder>
-    <zorder>label_9</zorder>
-    <zorder>label_10</zorder>
-    <zorder>label_11</zorder>
-    <zorder>label_12</zorder>
-    <zorder>hazardtype2</zorder>
-    <zorder>magnitude2</zorder>
-    <zorder>time2</zorder>
-    <zorder>duration2</zorder>
-    <zorder>label_13</zorder>
-    <zorder>hazardparam2</zorder>
-    <zorder>label_14</zorder>
-    <zorder>hazardtype1</zorder>
-    <zorder>browse2</zorder>
-    <zorder>save_hazards</zorder>
-    <zorder>button_box</zorder>
+    <widget class="QPlainTextEdit" name="message_box">
+     <property name="geometry">
+      <rect>
+       <x>13</x>
+       <y>527</y>
+       <width>481</width>
+       <height>81</height>
+      </rect>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="exposure">
     <attribute name="title">

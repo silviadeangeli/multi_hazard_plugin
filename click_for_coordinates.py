@@ -63,7 +63,7 @@ class PointTool(QgsMapTool):
             hazards_names.append(hazard_i.hazard_type)
             hazards_forcings.append(hazard_i.hazard_forcing)
 
-        make_plot(time, duration, magnitude, hazards_names, hazards_forcings)
+        make_plot(time, duration, magnitude, hazards_names, hazards_forcings, max(magnitude),x,y)
 
 
 

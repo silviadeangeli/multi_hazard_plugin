@@ -56,7 +56,7 @@ class MultiHazardRisk:
     """QGIS Plugin Implementation."""
     filePath = None
     hazards = []
-    message_list = []
+    message_list = ""
     def __init__(self, iface):
         """Constructor.
 
@@ -228,6 +228,9 @@ class MultiHazardRisk:
             bands_list.append(str(rasterband.GetBand()))
             if rasterband is None:
                 continue
+        widget2.clear()
+        widget3.clear()
+        widget4.clear()
         widget2.addItems(bands_list)
         widget2.setCurrentIndex(-1)
         widget3.addItems(bands_list)
@@ -284,13 +287,16 @@ class MultiHazardRisk:
         hazard_2 = hazard(m2, t2, d2, path2, hazard_type2, hazard_forcing2)
         if hazard_1.path != "":
             self.hazards.append(hazard_1)
-            self.message_list.append(hazard_1.name + " as " + hazard_1.hazard_type)
+            self.message_list = self.message_list +  '\n'  + (hazard_1.name + " as " + hazard_1.hazard_type)
         if hazard_2.path != "":
             self.hazards.append(hazard_2)
-            self.message_list.append(hazard_2.name + " as " + hazard_2.hazard_type)
+            self.message_list = self.message_list + '\n' + (hazard_2.name + " as " + hazard_2.hazard_type)
 
-        self.add_message('The following layers have been saved up to now:' + str(self.message_list), title = 'Hazards upload')
-
+        if len(self.hazards) >= 1:
+            self.dlg.message_box.setPlainText('The following layers have been saved up to now:' + self.message_list)
+            self.dlg.button_box.setEnabled(True)
+        else:
+            self.add_message('No hazards have been uploaded yet', title='Hazards upload')
 
         #Cleans the GUI to insert new hazards
 
@@ -332,10 +338,26 @@ class MultiHazardRisk:
         #layer_list.append(layer.name())
         #self.dlg.layer1.addItems(layer_list)
 
+
+        #All the GUI is cleaned
         self.dlg.hazardtype1.clear()
+        self.dlg.hazardtype2.clear()
+        self.dlg.magnitude1.clear()
+        self.dlg.magnitude2.clear()
+        self.dlg.duration1.clear()
+        self.dlg.duration2.clear()
+        self.dlg.time1.clear()
+        self.dlg.time2.clear()
+        self.dlg.textBrowser1.clear()
+        self.dlg.textBrowser2.clear()
+        self.dlg.message_box.clear()
+
+        #The list of the stored hazards is cleaned
+        self.hazards = []
+
+        self.dlg.button_box.setEnabled(False)
         self.dlg.hazardtype1.addItems(hazards_list)
         self.dlg.hazardtype1.setCurrentIndex(-1)
-        self.dlg.hazardtype2.clear()
         self.dlg.hazardtype2.addItems(hazards_list)
         self.dlg.hazardtype2.setCurrentIndex(-1)
 
@@ -366,8 +388,6 @@ class MultiHazardRisk:
                                  box_hazards=self.dlg.hazardtype2))
 
         self.dlg.save_hazards.clicked.connect(self.store_values)
-        self.dlg.save_hazards.clicked.connect(partial(self.add_message, text= ('The following layers have been saved up to now:'+ str(self.message_list)), title='Hazards upload'))
-
 
         # show the dialog
         self.dlg.show()
