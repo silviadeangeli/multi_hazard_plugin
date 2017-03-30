@@ -313,6 +313,10 @@ class MultiHazardRisk:
         self.dlg.connect(self.dlg.hazardtype1, SIGNAL("currentIndexChanged(const QString&)"),
                          partial(self.add_forcings, box_forcings=self.dlg.hazardparam1,
                                  box_hazards=self.dlg.hazardtype1))
+
+        self.dlg.connect(self.dlg.hazardtype2, SIGNAL("currentIndexChanged(const QString&)"),
+                         partial(self.add_forcings, box_forcings=self.dlg.hazardparam2,
+                                 box_hazards=self.dlg.hazardtype2))
 		
         # show the dialog
         self.dlg.show()
