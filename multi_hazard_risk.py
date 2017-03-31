@@ -286,40 +286,69 @@ class MultiHazardRisk:
 
         hazard_1 = hazard(m1, t1, d1, path1, hazard_type1, hazard_forcing1)
         hazard_2 = hazard(m2, t2, d2, path2, hazard_type2, hazard_forcing2)
-        if hazard_1.path != "":
+
+        if (hazard_1.path != "" and hazard_1.m != "" and hazard_1.t != "" and hazard_1.d != "" and hazard_1.hazard_type != "" and
+            hazard_1.hazard_forcing != ""):
             self.hazards.append(hazard_1)
             self.message_list = self.message_list +  '\n'  + (hazard_1.name + " as " + hazard_1.hazard_type)
-        if hazard_2.path != "":
+
+        if (hazard_2.path != "" and hazard_2.m != "" and hazard_2.t != "" and hazard_2.d != "" and hazard_2.hazard_type != "" and
+            hazard_2.hazard_forcing != ""):
             self.hazards.append(hazard_2)
             self.message_list = self.message_list + '\n' + (hazard_2.name + " as " + hazard_2.hazard_type)
+
+        if len(self.hazards) < 1:
+            if ((hazard_1.path != "" or hazard_1.m != "" or hazard_1.t != "" or hazard_1.d != "" or hazard_1.hazard_type != "" or
+                    hazard_1.hazard_forcing != "") or (hazard_2.path != "" or hazard_2.m != "" or hazard_2.t != "" or hazard_2.d != "" or hazard_2.hazard_type != "" or hazard_2.hazard_forcing != "")):
+                self.add_message('No hazards have been uploaded yet: Please, be sure all the fields have been filled', title='Hazards upload')
+            else:
+                self.add_message('No hazards have been uploaded yet: Please fill completely at least one of the two hazard forms', title='Hazards upload')
 
         if len(self.hazards) >= 1:
             self.dlg.message_box.setPlainText('The following layers have been saved up to now:' + self.message_list)
             self.dlg.button_box.setEnabled(True)
-        else:
-            self.add_message('No hazards have been uploaded yet', title='Hazards upload')
 
-        #Cleans the GUI to insert new hazards
+            # only h1 partially filled (h2 completely empty or completely filled)
+            if ((hazard_1.path != "" or hazard_1.m != "" or hazard_1.t != "" or hazard_1.d != "" or hazard_1.hazard_type != "" or
+                    hazard_1.hazard_forcing != "") and (hazard_1.path == "" or hazard_1.m == "" or hazard_1.t == "" or hazard_1.d == "" or hazard_1.hazard_type == "" or hazard_1.hazard_forcing == "")
+                    and ((hazard_2.path != "" and hazard_2.m != "" and hazard_2.t != "" and hazard_2.d != "" and hazard_2.hazard_type != "" and hazard_2.hazard_forcing != "") or
+                    (hazard_2.path == "" and hazard_2.m == "" and hazard_2.t == "" and hazard_2.d == "" and hazard_2.hazard_type == "" and hazard_2.hazard_forcing == ""))):
+                self.add_message('Hazard 1 has not been added: Please, be sure all the fields have been filled', title='Hazards upload')
+                self.clean_h2()
 
+            #only h2 partially filled (h1 completely empty or completely filled)
+            if ((hazard_2.path != "" or hazard_2.m != "" or hazard_2.t != "" or hazard_2.d != "" or hazard_2.hazard_type != "" or
+                    hazard_2.hazard_forcing != "") and (hazard_2.path == "" or hazard_2.m == "" or hazard_2.t == "" or hazard_2.d == "" or hazard_2.hazard_type == "" or hazard_2.hazard_forcing == "")
+                    and ((hazard_1.path != "" and hazard_1.m != "" and hazard_1.t != "" and hazard_1.d != "" and hazard_1.hazard_type != "" and hazard_1.hazard_forcing != "") or (hazard_1.path == ""
+                    and hazard_1.m == "" and hazard_1.t == "" and hazard_1.d == "" and hazard_1.hazard_type == "" and hazard_1.hazard_forcing == ""))):
+                self.add_message('Hazard 2 has not been added: Please, be sure all the fields have been filled', title='Hazards upload')
+                self.clean_h1()
+            #h1 and h2 both partially filled
+            if ((hazard_1.path != "" or hazard_1.m != "" or hazard_1.t != "" or hazard_1.d != "" or hazard_1.hazard_type != "" or
+                    hazard_1.hazard_forcing != "") and (hazard_1.path == "" or hazard_1.m == "" or hazard_1.t == "" or hazard_1.d == "" or hazard_1.hazard_type == "" or hazard_1.hazard_forcing == "") and
+                    (hazard_2.path != "" or hazard_2.m != "" or hazard_2.t != "" or hazard_2.d != "" or hazard_2.hazard_type != "" or
+                    hazard_2.hazard_forcing != "") and (hazard_2.path == "" or hazard_2.m == "" or hazard_2.t == "" or hazard_2.d == "" or hazard_2.hazard_type == "" or hazard_2.hazard_forcing == "")):
+                self.add_message('Hazards 1 and 2 has not been added: Please, be sure all the fields have been filled', title='Hazards upload')
+            else:
+                self.clean_h1()
+                self.clean_h2()
+
+
+    def clean_h1(self):
         self.dlg.magnitude1.setCurrentIndex(-1)
         self.dlg.time1.setCurrentIndex(-1)
         self.dlg.duration1.setCurrentIndex(-1)
+        self.dlg.textBrowser1.clear()
+        self.dlg.hazardtype1.setCurrentIndex(-1)
+        self.dlg.hazardparam1.setCurrentIndex(-1)
 
+    def clean_h2(self):
         self.dlg.magnitude2.setCurrentIndex(-1)
         self.dlg.time2.setCurrentIndex(-1)
         self.dlg.duration2.setCurrentIndex(-1)
-
-        self.dlg.textBrowser1.clear()
         self.dlg.textBrowser2.clear()
-
-        self.dlg.hazardtype1.setCurrentIndex(-1)
         self.dlg.hazardtype2.setCurrentIndex(-1)
-
-        self.dlg.hazardparam1.setCurrentIndex(-1)
         self.dlg.hazardparam2.setCurrentIndex(-1)
-
-        for hazard_i in self.hazards:
-            hazard_i.print_debug()
 
     def compute(self):
         for hazard_i in self.hazards:

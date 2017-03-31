@@ -74,7 +74,7 @@
      <property name="geometry">
       <rect>
        <x>200</x>
-       <y>230</y>
+       <y>240</y>
        <width>101</width>
        <height>16</height>
       </rect>
@@ -481,6 +481,25 @@
        <width>481</width>
        <height>81</height>
       </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_17">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>510</y>
+       <width>191</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Hazards already uploaded</string>
      </property>
     </widget>
    </widget>
