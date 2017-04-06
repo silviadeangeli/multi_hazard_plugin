@@ -1,8 +1,17 @@
 from qgis.core import *
 from qgis.utils import *
 from qgis.gui import *
+
 import numpy as np
-from data_plotter import define_color, obtain_raster_values, make_plot
+from data_plotter import *
+import rasterio
+
+def obtain_raster_values(raster_path, band, x, y):
+    with rasterio.open(raster_path) as src:
+        vals = src.sample([(x, y)])
+        for val in vals:
+            #QgsMessageLog.logMessage("val" + str(val), "debug")
+            return val[band-1]
 
 class PointTool(QgsMapTool):
     def __init__(self, canvas, hazard):
@@ -22,12 +31,18 @@ class PointTool(QgsMapTool):
 
     def canvasReleaseEvent(self, event):
         # Get the click
-        x = event.pos().x()
-        y = event.pos().y()
+        x_click = event.pos().x()
+        y_click = event.pos().y()
 
-        point = self.canvas.getCoordinateTransform().toMapCoordinates(x, y)
-        self.plot(point.x(),point.y())
+        point = self.canvas.getCoordinateTransform().toMapCoordinates(x_click, y_click)
+        x, y = point.x(), point.y()
 
+        time, duration, magnitude, hazards_names, hazards_forcings = \
+            self.extract_hazard_values(x, y)
+
+        h_active = extract_h_active(time, duration, magnitude)
+        title = 'Evolution of hazards in time in x: ' + str(x) + ' and y: ' + str(y)
+        make_plot(time, duration, magnitude, hazards_names, hazards_forcings, h_active, title)
 
     def activate(self):
         pass
@@ -44,8 +59,7 @@ class PointTool(QgsMapTool):
     def isEditTool(self):
         return True
 
-    def plot(self,x,y):
-
+    def extract_hazard_values(self, x, y):
         time_list = []
         duration_list = []
         magnitude_list = []
@@ -66,7 +80,7 @@ class PointTool(QgsMapTool):
         time = np.array(time_list)
         duration = np.array(duration_list)
         magnitude = np.array(magnitude_list)
-        make_plot(time, duration, magnitude, hazards_names, hazards_forcings, x, y)
 
+        return time, duration, magnitude, hazards_names, hazards_forcings
 
 

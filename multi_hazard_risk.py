@@ -46,8 +46,8 @@ import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import random
-from data_plotter import define_color, obtain_raster_values, make_plot
-from click_for_coordinates import PointTool
+from data_plotter import define_color, make_plot
+from click_for_coordinates import PointTool, obtain_raster_values
 from qgis.core import *
 from qgis.utils import *
 from qgis.gui import *
