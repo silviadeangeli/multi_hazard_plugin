@@ -36,6 +36,7 @@ import sys
 from functools import partial
 import Tkinter as tk
 from show_results import ShowResults
+from info_hazards import InfoHazards
 from matplotlib.figure import Figure
 
 import numpy as np
@@ -45,7 +46,7 @@ import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import random
-from data_plotter import create_rectangle, define_color, obtain_raster_values, make_plot
+from data_plotter import define_color, obtain_raster_values, make_plot
 from click_for_coordinates import PointTool
 from qgis.core import *
 from qgis.utils import *
@@ -93,6 +94,7 @@ class MultiHazardRisk:
         self.toolbar.setObjectName(u'MultiHazardRisk')
 
         self.dialog_instance = ShowResults()
+        self.dlg_info_hazards = InfoHazards()
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -121,6 +123,7 @@ class MultiHazardRisk:
         status_tip=None,
         whats_this=None,
         parent=None):
+        self.create = """create"""
         """Add a toolbar icon to the toolbar.
 
         :param icon_path: Path to the icon for this action. Can be a resource
@@ -155,10 +158,10 @@ class MultiHazardRisk:
         :param whats_this: Optional text to show in the status bar when the
             mouse pointer hovers over the action.
 
-        :returns: The action that was created. Note that the action is also
+        :returns: The action that was %sd. Note that the action is also
             added to self.actions list.
         :rtype: QAction
-        """
+        """ % self.create
 
         # Create the dialog (after translation) and keep reference
         self.dlg = MultiHazardRiskDialog()
@@ -357,7 +360,9 @@ class MultiHazardRisk:
         self.dlg.close()
         self.dialog_instance.exec_()
 
-        pass
+    def open_info(self):
+        self.dlg_info_hazards.exec_()
+
 
     def run(self):
         """Run method that performs all the real work"""
@@ -400,6 +405,7 @@ class MultiHazardRisk:
         self.dlg.browse2.clicked.connect(partial(self.single_browse, widget=self.dlg.textBrowser2, widget2=self.dlg.magnitude2, widget3=self.dlg.duration2, widget4=self.dlg.time2, ext='*.tif'))
         self.dlg.update()
 
+        self.dlg.hazard_label.clicked.connect(self.open_info)
 
         #Browser button for exposure
         #self.dlg.browseE1.clicked.connect(partial(self.single_browse, widget=self.dlg.textBrowserE1, ext='*.shp'))

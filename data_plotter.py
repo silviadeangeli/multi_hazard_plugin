@@ -14,11 +14,12 @@ def define_color(size, i, style):
     cmap = cm.get_cmap(style)
     rgba = cmap(i/float(size))
     return rgba
-
+'''
 def create_rectangle(time, duration, h, y_pos,color, alpha_set, label_set):
     xy = (time, y_pos)
     rectangle = patches.Rectangle(xy, duration,h,facecolor=color, alpha=alpha_set, label = label_set)
     return rectangle
+'''
 
 def obtain_raster_values(raster_path,band,x,y):
     with rasterio.open(raster_path) as src:
@@ -27,20 +28,43 @@ def obtain_raster_values(raster_path,band,x,y):
             QgsMessageLog.logMessage("val" + str(val), "debug")
             return val[band-1]
 
-def make_plot(time,duration,magnitude,hazards, parameters, mag_max,x,y):
+def make_plot(time, duration, magnitude, hazards, parameters, x, y):
     fig, ax = plt.subplots()
+    fig.show()
+    n_hazards = len(hazards)
+    mag_max = np.max(magnitude)
+
     T = []
     hazards_number = []
-    for k in range(len(time)):
-        ax.add_patch(create_rectangle(time[k], duration[k], magnitude[k], 20*k+mag_max, define_color(len(time),k,'Spectral'),1, str(hazards[k]) ))
-        #T.append(10+k*10+magnitude[k]/2)
-        T.append(20*k+mag_max)
+    offset = 5
+    for k in range(n_hazards):
+        y_pos = k*(mag_max+offset)
+        # create a rectangle
+        xy = (time[k], y_pos)
+        r = patches.Rectangle(
+            xy,
+            duration[k],
+            magnitude[k],
+            facecolor=define_color(len(time),k,'Spectral'),
+            alpha=1,
+            label=str(hazards[k])
+        )
+        ax.add_patch(r)
+        T.append(y_pos)
         hazards_number.append('Hazard ' + str(k+1))
-        plt.text(time[k], 20*k+mag_max+magnitude[k], str(parameters[k]) +': '+ str(magnitude[k]))
+        text = str(parameters[k]) + ': ' + str(magnitude[k])
+        xy_t = (time[k], y_pos + magnitude[k] + 0.1)
+        ann = ax.annotate(text, xy=xy_t, horizontalalignment='left', verticalalignment='bottom')
+
+    '''
     for k in range(len(time)):
         ax.add_patch(create_rectangle(time[k], duration[k], magnitude[k], - mag_max, define_color(len(time),k,'Spectral'),0.5, ""))
+    '''
 
     ax.autoscale(True, axis='both', tight=None)
+    plt.ylim((0, y_pos+magnitude[k]+5))
+    plt.xlim((np.min(time)-1, np.max(time+duration)+1))
+
     #ax.yaxis.set_visible(False)
     ax.set_yticks(T)
     ax.set_yticklabels(hazards_number)
@@ -48,11 +72,10 @@ def make_plot(time,duration,magnitude,hazards, parameters, mag_max,x,y):
     ax.set_title('Evolution of hazards in time in x: '+str(x)+ ' and y: '+str(y))
     #ax.set_aspect(40, adjustable=None, anchor=None)
     plt.legend()
+    plt.grid()
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 
     #figManager = plt.get_current_fig_manager()
-    #figManager.window.showMaximized()
-
 
     Size = fig.get_size_inches()
     fig.set_size_inches(Size[0] * 2, Size[1] * 2,
