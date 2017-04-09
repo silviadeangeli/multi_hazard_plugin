@@ -38,7 +38,7 @@ def make_plot(time, duration, magnitude, hazards, parameters, h_active, title=''
         T.append(y_pos)
         hazards_number.append('h' + str(k+1) + ': ' + str(hazards[k]) )
         text = str(parameters[k]) + ': ' + str(magnitude[k])
-        xy_t = (time[k], y_pos + magnitude[k] + 0.1)
+        xy_t = (time[k], y_pos + magnitude[k] + 1.5)
         ax.annotate(text, xy=xy_t, horizontalalignment='left', verticalalignment='bottom')
 
     ax.autoscale(True, axis='both', tight=None)
@@ -147,7 +147,7 @@ if __name__ == "__main__":
     duration = np.array([5, 3, 2, 5, 4, 5, 5])
     magnitude = np.array([1, 2, 1, 4, 2, 6, 3])
     hazards_names = ['hearthquake', 'flood', 'landslide', 'earthquake', 'flood', 'snowstorm', 'landslide']
-    hazards_forcings = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
+    hazards_forcings = ['pga [g]', 'wd [m]', 'vel [cm/yr]', 'pga [g]', 'wd [m]', 'height [m]', 'vel [cm/yr]']
 
     '''
     time = np.array([0, 8])
@@ -159,6 +159,6 @@ if __name__ == "__main__":
 
 
     h_active = extract_h_active(time, duration, magnitude)
-    title = 'Test'
+    title = 'Evolution of hazards on time'
     make_plot(time, duration, magnitude, hazards_names, hazards_forcings, h_active, title)
 
