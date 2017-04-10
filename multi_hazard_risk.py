@@ -38,7 +38,7 @@ import Tkinter as tk
 from show_results import ShowResults
 from info_hazards import InfoHazards
 from matplotlib.figure import Figure
-
+import re
 import numpy as np
 from PyQt4 import QtGui
 
@@ -58,7 +58,7 @@ class MultiHazardRisk:
     """QGIS Plugin Implementation."""
     filePath = None
     hazards = []
-    message_list = ""
+
     def __init__(self, iface):
         """Constructor.
 
@@ -274,67 +274,39 @@ class MultiHazardRisk:
         t1 = self.dlg.time1.currentText()
         d1 = self.dlg.duration1.currentText()
 
-        m2 = self.dlg.magnitude2.currentText()
-        t2 = self.dlg.time2.currentText()
-        d2 = self.dlg.duration2.currentText()
-
         path1 = self.dlg.textBrowser1.toPlainText()
-        path2 = self.dlg.textBrowser2.toPlainText()
 
         hazard_type1 = self.dlg.hazardtype1.currentText()
-        hazard_type2 = self.dlg.hazardtype2.currentText()
 
         hazard_forcing1 = self.dlg.hazardparam1.currentText()
-        hazard_forcing2 = self.dlg.hazardparam2.currentText()
 
         hazard_1 = hazard(m1, t1, d1, path1, hazard_type1, hazard_forcing1)
-        hazard_2 = hazard(m2, t2, d2, path2, hazard_type2, hazard_forcing2)
 
         if (hazard_1.path != "" and hazard_1.m != "" and hazard_1.t != "" and hazard_1.d != "" and hazard_1.hazard_type != "" and
             hazard_1.hazard_forcing != ""):
             self.hazards.append(hazard_1)
-            self.message_list = self.message_list +  '\n'  + (hazard_1.name + " as " + hazard_1.hazard_type)
+            self.dlg.listWidget.addItem(hazard_1.name + " as " + hazard_1.hazard_type + ". Unit of measure: " + hazard_1.hazard_forcing +
+                                ". Magnitude band: " + hazard_1.m + ". Initial time band: " + hazard_1.t +
+                                        ". Duration band: " + hazard_1.d + ". File path: " + hazard_1.path)
 
-        if (hazard_2.path != "" and hazard_2.m != "" and hazard_2.t != "" and hazard_2.d != "" and hazard_2.hazard_type != "" and
-            hazard_2.hazard_forcing != ""):
-            self.hazards.append(hazard_2)
-            self.message_list = self.message_list + '\n' + (hazard_2.name + " as " + hazard_2.hazard_type)
 
         if len(self.hazards) < 1:
             if ((hazard_1.path != "" or hazard_1.m != "" or hazard_1.t != "" or hazard_1.d != "" or hazard_1.hazard_type != "" or
-                    hazard_1.hazard_forcing != "") or (hazard_2.path != "" or hazard_2.m != "" or hazard_2.t != "" or hazard_2.d != "" or hazard_2.hazard_type != "" or hazard_2.hazard_forcing != "")):
+                    hazard_1.hazard_forcing != "")):
                 self.add_message('No hazards have been uploaded yet: Please, be sure all the fields have been filled', title='Hazards upload')
             else:
-                self.add_message('No hazards have been uploaded yet: Please fill completely at least one of the two hazard forms', title='Hazards upload')
+                self.add_message('No hazards have been uploaded yet: Please fill completely all the fields of the form and save', title='Hazards upload')
 
         if len(self.hazards) >= 1:
-            self.dlg.message_box.setPlainText('The following layers have been saved up to now:' + self.message_list)
             self.dlg.button_box.setEnabled(True)
 
-            # only h1 partially filled (h2 completely empty or completely filled)
+            # only  partially filled
             if ((hazard_1.path != "" or hazard_1.m != "" or hazard_1.t != "" or hazard_1.d != "" or hazard_1.hazard_type != "" or
-                    hazard_1.hazard_forcing != "") and (hazard_1.path == "" or hazard_1.m == "" or hazard_1.t == "" or hazard_1.d == "" or hazard_1.hazard_type == "" or hazard_1.hazard_forcing == "")
-                    and ((hazard_2.path != "" and hazard_2.m != "" and hazard_2.t != "" and hazard_2.d != "" and hazard_2.hazard_type != "" and hazard_2.hazard_forcing != "") or
-                    (hazard_2.path == "" and hazard_2.m == "" and hazard_2.t == "" and hazard_2.d == "" and hazard_2.hazard_type == "" and hazard_2.hazard_forcing == ""))):
-                self.add_message('Hazard 1 has not been added: Please, be sure all the fields have been filled', title='Hazards upload')
-                self.clean_h2()
-
-            #only h2 partially filled (h1 completely empty or completely filled)
-            if ((hazard_2.path != "" or hazard_2.m != "" or hazard_2.t != "" or hazard_2.d != "" or hazard_2.hazard_type != "" or
-                    hazard_2.hazard_forcing != "") and (hazard_2.path == "" or hazard_2.m == "" or hazard_2.t == "" or hazard_2.d == "" or hazard_2.hazard_type == "" or hazard_2.hazard_forcing == "")
-                    and ((hazard_1.path != "" and hazard_1.m != "" and hazard_1.t != "" and hazard_1.d != "" and hazard_1.hazard_type != "" and hazard_1.hazard_forcing != "") or (hazard_1.path == ""
-                    and hazard_1.m == "" and hazard_1.t == "" and hazard_1.d == "" and hazard_1.hazard_type == "" and hazard_1.hazard_forcing == ""))):
-                self.add_message('Hazard 2 has not been added: Please, be sure all the fields have been filled', title='Hazards upload')
-                self.clean_h1()
-            #h1 and h2 both partially filled
-            if ((hazard_1.path != "" or hazard_1.m != "" or hazard_1.t != "" or hazard_1.d != "" or hazard_1.hazard_type != "" or
-                    hazard_1.hazard_forcing != "") and (hazard_1.path == "" or hazard_1.m == "" or hazard_1.t == "" or hazard_1.d == "" or hazard_1.hazard_type == "" or hazard_1.hazard_forcing == "") and
-                    (hazard_2.path != "" or hazard_2.m != "" or hazard_2.t != "" or hazard_2.d != "" or hazard_2.hazard_type != "" or
-                    hazard_2.hazard_forcing != "") and (hazard_2.path == "" or hazard_2.m == "" or hazard_2.t == "" or hazard_2.d == "" or hazard_2.hazard_type == "" or hazard_2.hazard_forcing == "")):
-                self.add_message('Hazards 1 and 2 has not been added: Please, be sure all the fields have been filled', title='Hazards upload')
+                    hazard_1.hazard_forcing != "") and (hazard_1.path == "" or hazard_1.m == "" or hazard_1.t == "" or hazard_1.d == "" or hazard_1.hazard_type == "" or hazard_1.hazard_forcing == "")):
+                self.add_message('The hazard has not been added: Please, be sure all the fields have been filled', title='Hazards upload')
             else:
                 self.clean_h1()
-                self.clean_h2()
+
 
 
     def clean_h1(self):
@@ -345,13 +317,6 @@ class MultiHazardRisk:
         self.dlg.hazardtype1.setCurrentIndex(-1)
         self.dlg.hazardparam1.setCurrentIndex(-1)
 
-    def clean_h2(self):
-        self.dlg.magnitude2.setCurrentIndex(-1)
-        self.dlg.time2.setCurrentIndex(-1)
-        self.dlg.duration2.setCurrentIndex(-1)
-        self.dlg.textBrowser2.clear()
-        self.dlg.hazardtype2.setCurrentIndex(-1)
-        self.dlg.hazardparam2.setCurrentIndex(-1)
 
     def compute(self):
         for hazard_i in self.hazards:
@@ -362,6 +327,11 @@ class MultiHazardRisk:
 
     def open_info(self):
         self.dlg_info_hazards.exec_()
+
+    def delete_hazard(self):
+        row = self.dlg.listWidget.currentRow()
+        #text = self.dlg.listWidget.currentItem().text()
+        self.dlg.listWidget.takeItem(row)
 
 
     def run(self):
@@ -376,16 +346,11 @@ class MultiHazardRisk:
 
         #All the GUI is cleaned
         self.dlg.hazardtype1.clear()
-        self.dlg.hazardtype2.clear()
         self.dlg.magnitude1.clear()
-        self.dlg.magnitude2.clear()
         self.dlg.duration1.clear()
-        self.dlg.duration2.clear()
         self.dlg.time1.clear()
-        self.dlg.time2.clear()
         self.dlg.textBrowser1.clear()
-        self.dlg.textBrowser2.clear()
-        self.dlg.message_box.clear()
+        self.dlg.listWidget.clear()
 
         #The list of the stored hazards is cleaned
         self.hazards = []
@@ -393,19 +358,16 @@ class MultiHazardRisk:
         self.dlg.button_box.setEnabled(False)
         self.dlg.hazardtype1.addItems(hazards_list)
         self.dlg.hazardtype1.setCurrentIndex(-1)
-        self.dlg.hazardtype2.clear()
-        self.dlg.hazardtype2.addItems(hazards_list)
-        self.dlg.hazardtype2.setCurrentIndex(-1)
+
 
         #Browser button for h1
     	self.dlg.browse1.clicked.connect(partial(self.single_browse, widget=self.dlg.textBrowser1, widget2=self.dlg.magnitude1, widget3=self.dlg.duration1, widget4=self.dlg.time1, ext='*.tif'))
         self.dlg.update()
 
-        #Browser button for h2
-        self.dlg.browse2.clicked.connect(partial(self.single_browse, widget=self.dlg.textBrowser2, widget2=self.dlg.magnitude2, widget3=self.dlg.duration2, widget4=self.dlg.time2, ext='*.tif'))
-        self.dlg.update()
 
         self.dlg.hazard_label.clicked.connect(self.open_info)
+
+        self.dlg.delete_selected_hazard.clicked.connect(self.delete_hazard)
 
         #Browser button for exposure
         #self.dlg.browseE1.clicked.connect(partial(self.single_browse, widget=self.dlg.textBrowserE1, ext='*.shp'))
@@ -422,9 +384,6 @@ class MultiHazardRisk:
                          partial(self.add_forcings, box_forcings=self.dlg.hazardparam1,
                                  box_hazards=self.dlg.hazardtype1))
 
-        self.dlg.connect(self.dlg.hazardtype2, SIGNAL("currentIndexChanged(const QString&)"),
-                         partial(self.add_forcings, box_forcings=self.dlg.hazardparam2,
-                                 box_hazards=self.dlg.hazardtype2))
 
         self.dlg.save_hazards.clicked.connect(self.store_values)
 

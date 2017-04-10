@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>527</width>
-    <height>701</height>
+    <width>530</width>
+    <height>670</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,32 +16,13 @@
   <property name="styleSheet">
    <string notr="true"/>
   </property>
-  <widget class="QDialogButtonBox" name="button_box">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>190</x>
-     <y>670</y>
-     <width>341</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-   </property>
-  </widget>
   <widget class="QTabWidget" name="tabWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>20</y>
+     <y>40</y>
      <width>511</width>
-     <height>641</height>
+     <height>611</height>
     </rect>
    </property>
    <property name="currentIndex">
@@ -57,8 +38,8 @@
     <widget class="QLabel" name="label">
      <property name="geometry">
       <rect>
-       <x>200</x>
-       <y>0</y>
+       <x>190</x>
+       <y>10</y>
        <width>161</width>
        <height>20</height>
       </rect>
@@ -70,33 +51,14 @@
       </font>
      </property>
      <property name="text">
-      <string>Hazard 1</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_2">
-     <property name="geometry">
-      <rect>
-       <x>200</x>
-       <y>240</y>
-       <width>101</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>Hazard 2</string>
+      <string>Upload a Hazard </string>
      </property>
     </widget>
     <widget class="QLabel" name="label_3">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>10</y>
+       <y>20</y>
        <width>101</width>
        <height>40</height>
       </rect>
@@ -109,7 +71,7 @@
      <property name="geometry">
       <rect>
        <x>230</x>
-       <y>100</y>
+       <y>120</y>
        <width>261</width>
        <height>31</height>
       </rect>
@@ -119,7 +81,7 @@
      <property name="geometry">
       <rect>
        <x>230</x>
-       <y>160</y>
+       <y>180</y>
        <width>261</width>
        <height>31</height>
       </rect>
@@ -132,7 +94,7 @@
      <property name="geometry">
       <rect>
        <x>230</x>
-       <y>130</y>
+       <y>150</y>
        <width>261</width>
        <height>31</height>
       </rect>
@@ -145,7 +107,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>130</y>
+       <y>150</y>
        <width>241</width>
        <height>31</height>
       </rect>
@@ -167,7 +129,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>160</y>
+       <y>180</y>
        <width>241</width>
        <height>31</height>
       </rect>
@@ -186,7 +148,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>190</y>
+       <y>210</y>
        <width>241</width>
        <height>31</height>
       </rect>
@@ -205,7 +167,7 @@
      <property name="geometry">
       <rect>
        <x>230</x>
-       <y>190</y>
+       <y>210</y>
        <width>261</width>
        <height>31</height>
       </rect>
@@ -218,7 +180,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>40</y>
+       <y>50</y>
        <width>113</width>
        <height>32</height>
       </rect>
@@ -231,180 +193,9 @@
      <property name="geometry">
       <rect>
        <x>230</x>
-       <y>20</y>
+       <y>40</y>
        <width>261</width>
        <height>41</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_7">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>240</y>
-       <width>101</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Select layer</string>
-     </property>
-    </widget>
-    <widget class="QPlainTextEdit" name="textBrowser2">
-     <property name="geometry">
-      <rect>
-       <x>230</x>
-       <y>260</y>
-       <width>261</width>
-       <height>41</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_9">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>340</y>
-       <width>121</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Hazard parameter</string>
-     </property>
-     <property name="buddy">
-      <cstring>hazardparam2</cstring>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_10">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>370</y>
-       <width>241</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>Select from your raster which is the band where magnitude/intensity information is stored</string>
-     </property>
-     <property name="text">
-      <string>Magnitude/Intensity band  </string>
-     </property>
-     <property name="buddy">
-      <cstring>magnitude2</cstring>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_11">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>400</y>
-       <width>241</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>Select from your raster which is the band where information on the initial time of the hazard is stored</string>
-     </property>
-     <property name="text">
-      <string>Initial time band</string>
-     </property>
-     <property name="buddy">
-      <cstring>time2</cstring>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_12">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>430</y>
-       <width>241</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>Select from your raster which is the band where information on the duration of the hazard is stored</string>
-     </property>
-     <property name="text">
-      <string>Duration band</string>
-     </property>
-     <property name="buddy">
-      <cstring>duration2</cstring>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="hazardtype2">
-     <property name="geometry">
-      <rect>
-       <x>230</x>
-       <y>300</y>
-       <width>261</width>
-       <height>60</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="magnitude2">
-     <property name="geometry">
-      <rect>
-       <x>230</x>
-       <y>360</y>
-       <width>261</width>
-       <height>60</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>Select from your raster which is the band where magnitude/intensity information is stored</string>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="time2">
-     <property name="geometry">
-      <rect>
-       <x>230</x>
-       <y>390</y>
-       <width>261</width>
-       <height>60</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>Select from your raster which is the band where information on the initial time of the hazard is stored</string>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="duration2">
-     <property name="geometry">
-      <rect>
-       <x>230</x>
-       <y>420</y>
-       <width>261</width>
-       <height>60</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>Select from your raster which is the band where information on the duration of the hazard is stored</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_13">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>310</y>
-       <width>241</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Hazard type</string>
-     </property>
-     <property name="buddy">
-      <cstring>hazardtype2</cstring>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="hazardparam2">
-     <property name="geometry">
-      <rect>
-       <x>230</x>
-       <y>334</y>
-       <width>261</width>
-       <height>50</height>
       </rect>
      </property>
     </widget>
@@ -412,7 +203,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>100</y>
+       <y>120</y>
        <width>121</width>
        <height>31</height>
       </rect>
@@ -427,54 +218,31 @@
     <widget class="QComboBox" name="hazardtype1">
      <property name="geometry">
       <rect>
-       <x>229</x>
-       <y>70</y>
+       <x>230</x>
+       <y>90</y>
        <width>261</width>
        <height>31</height>
       </rect>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="browse2">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>270</y>
-       <width>113</width>
-       <height>32</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Browse...</string>
      </property>
     </widget>
     <widget class="QToolButton" name="save_hazards">
      <property name="geometry">
       <rect>
        <x>340</x>
-       <y>480</y>
+       <y>270</y>
        <width>141</width>
        <height>22</height>
       </rect>
      </property>
      <property name="text">
-      <string>Save hazards </string>
-     </property>
-    </widget>
-    <widget class="QPlainTextEdit" name="message_box">
-     <property name="geometry">
-      <rect>
-       <x>13</x>
-       <y>527</y>
-       <width>481</width>
-       <height>81</height>
-      </rect>
+      <string>Save hazard</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_17">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>510</y>
+       <x>10</x>
+       <y>320</y>
        <width>191</width>
        <height>16</height>
       </rect>
@@ -493,7 +261,7 @@
      <property name="geometry">
       <rect>
        <x>-10</x>
-       <y>70</y>
+       <y>90</y>
        <width>113</width>
        <height>32</height>
       </rect>
@@ -518,6 +286,48 @@
      </property>
      <property name="flat">
       <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QDialogButtonBox" name="button_box">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>550</y>
+       <width>341</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+    <widget class="QListWidget" name="listWidget">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>340</y>
+       <width>481</width>
+       <height>171</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QToolButton" name="delete_selected_hazard">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>520</y>
+       <width>141</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Delete selected layer</string>
      </property>
     </widget>
    </widget>
