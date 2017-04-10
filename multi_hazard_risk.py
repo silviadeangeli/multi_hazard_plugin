@@ -290,12 +290,6 @@ class MultiHazardRisk:
             item.setData(Qt.UserRole, data)
 
 
-
-            #self.dlg.listWidget.addItem(hazard_1.name + " as " + hazard_1.hazard_type + ". Unit of measure: " + hazard_1.hazard_forcing +
-                                #". Magnitude band: " + hazard_1.m + ". Initial time band: " + hazard_1.t +
-                                        #". Duration band: " + hazard_1.d + ". File path: " + hazard_1.path)
-
-
         if self.dlg.listWidget.count() < 1:
             if ((path1 != "" or m1 != "" or t1 != "" or d1 != "" or hazard_type1 != "" or
                     hazard_forcing1 != "")):
@@ -332,12 +326,8 @@ class MultiHazardRisk:
             self.hazards.append(item.data(Qt.UserRole))
             #self.hazards(row).print_debug()
 
-
-
-
-
-            #for hazard_i in self.hazards:
-            #self.add_layer(hazard_i.path, hazard_i.hazard_type)
+        for hazard_i in self.hazards:
+            self.add_layer(hazard_i.path, hazard_i.hazard_type)
 
         self.dlg.close()
         self.dialog_instance.exec_()
