@@ -20,8 +20,8 @@
  *                                                                         *
  ***************************************************************************/
 """
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, QFileInfo, SIGNAL
-from PyQt4.QtGui import QAction, QIcon, QDialog, QLineEdit, QFileDialog, QMessageBox
+from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, QFileInfo, SIGNAL, Qt
+from PyQt4.QtGui import QAction, QIcon, QDialog, QLineEdit, QFileDialog, QMessageBox, QListWidgetItem
 from qgis.core import QgsMessageLog
 # Initialize Qt resources from file resources.py
 import resources
@@ -38,7 +38,6 @@ import Tkinter as tk
 from show_results import ShowResults
 from info_hazards import InfoHazards
 from matplotlib.figure import Figure
-import re
 import numpy as np
 from PyQt4 import QtGui
 
@@ -280,29 +279,36 @@ class MultiHazardRisk:
 
         hazard_forcing1 = self.dlg.hazardparam1.currentText()
 
-        hazard_1 = hazard(m1, t1, d1, path1, hazard_type1, hazard_forcing1)
+        #hazard_1 = hazard(m1, t1, d1, path1, hazard_type1, hazard_forcing1)
 
-        if (hazard_1.path != "" and hazard_1.m != "" and hazard_1.t != "" and hazard_1.d != "" and hazard_1.hazard_type != "" and
-            hazard_1.hazard_forcing != ""):
-            self.hazards.append(hazard_1)
-            self.dlg.listWidget.addItem(hazard_1.name + " as " + hazard_1.hazard_type + ". Unit of measure: " + hazard_1.hazard_forcing +
-                                ". Magnitude band: " + hazard_1.m + ". Initial time band: " + hazard_1.t +
-                                        ". Duration band: " + hazard_1.d + ". File path: " + hazard_1.path)
+        if (path1 != "" and m1 != "" and t1 != "" and d1 != "" and hazard_type1 != "" and
+            hazard_forcing1 != ""):
+            #self.hazards.append(hazard_1)
+
+            item = QListWidgetItem(QFileInfo(path1).baseName() + " as " + hazard_type1, self.dlg.listWidget)
+            data = hazard(m1, t1, d1, path1, hazard_type1, hazard_forcing1)
+            item.setData(Qt.UserRole, data)
 
 
-        if len(self.hazards) < 1:
-            if ((hazard_1.path != "" or hazard_1.m != "" or hazard_1.t != "" or hazard_1.d != "" or hazard_1.hazard_type != "" or
-                    hazard_1.hazard_forcing != "")):
+
+            #self.dlg.listWidget.addItem(hazard_1.name + " as " + hazard_1.hazard_type + ". Unit of measure: " + hazard_1.hazard_forcing +
+                                #". Magnitude band: " + hazard_1.m + ". Initial time band: " + hazard_1.t +
+                                        #". Duration band: " + hazard_1.d + ". File path: " + hazard_1.path)
+
+
+        if self.dlg.listWidget.count() < 1:
+            if ((path1 != "" or m1 != "" or t1 != "" or d1 != "" or hazard_type1 != "" or
+                    hazard_forcing1 != "")):
                 self.add_message('No hazards have been uploaded yet: Please, be sure all the fields have been filled', title='Hazards upload')
             else:
                 self.add_message('No hazards have been uploaded yet: Please fill completely all the fields of the form and save', title='Hazards upload')
 
-        if len(self.hazards) >= 1:
+        if self.dlg.listWidget.count() >= 1:
             self.dlg.button_box.setEnabled(True)
 
             # only  partially filled
-            if ((hazard_1.path != "" or hazard_1.m != "" or hazard_1.t != "" or hazard_1.d != "" or hazard_1.hazard_type != "" or
-                    hazard_1.hazard_forcing != "") and (hazard_1.path == "" or hazard_1.m == "" or hazard_1.t == "" or hazard_1.d == "" or hazard_1.hazard_type == "" or hazard_1.hazard_forcing == "")):
+            if ((path1 != "" or m1 != "" or t1 != "" or d1 != "" or hazard_type1 != "" or
+                    hazard_forcing1 != "") and (path1 == "" or m1 == "" or t1 == "" or d1 == "" or hazard_type1 == "" or hazard_forcing1 == "")):
                 self.add_message('The hazard has not been added: Please, be sure all the fields have been filled', title='Hazards upload')
             else:
                 self.clean_h1()
@@ -319,8 +325,19 @@ class MultiHazardRisk:
 
 
     def compute(self):
-        for hazard_i in self.hazards:
-            self.add_layer(hazard_i.path, hazard_i.hazard_type)
+
+        for row in range(self.dlg.listWidget.count()):
+            item = self.dlg.listWidget.item(row)
+            #self.hazards.append(item.data)
+            self.hazards.append(item.data(Qt.UserRole))
+            #self.hazards(row).print_debug()
+
+
+
+
+
+            #for hazard_i in self.hazards:
+            #self.add_layer(hazard_i.path, hazard_i.hazard_type)
 
         self.dlg.close()
         self.dialog_instance.exec_()

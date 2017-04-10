@@ -67,6 +67,7 @@ class PointTool(QgsMapTool):
         hazards_forcings = []
 
         for hazard_i in self.hazard:
+            QgsMessageLog.logMessage("Layer name: " + str(hazard_i), "debug")
             m_val = obtain_raster_values(hazard_i.path, int(hazard_i.m), x, y)
             t_val = obtain_raster_values(hazard_i.path, int(hazard_i.t), x, y)
             d_val = obtain_raster_values(hazard_i.path, int(hazard_i.d), x, y)
